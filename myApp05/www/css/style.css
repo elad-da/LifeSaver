@@ -1,0 +1,27 @@
+/* Styles go here */
+
+img{
+  max-height: 120vw;
+}
+.center{
+  text-align: center;
+}
+.gender .human-body{
+  padding: 20px;
+}
+.input-label{
+  direction: rtl;
+}
+.age{
+  width: auto;
+}
+.body-parts-list{
+  direction: rtl;
+}
+.body-parts-list img{
+  right: 16px;
+}
+
+.item-complex.item-icon-left .item-content{
+  padding-right: 70px;
+}
