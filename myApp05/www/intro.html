@@ -91,10 +91,16 @@
             </div> -->
             </ion-wizard-content>
         </ion-slide>
-        <ion-slide ion-wizard-step next-condition="step2.name" prev-condition="!step2.name">
+        <ion-slide ion-wizard-step next-condition="step2.bodyPart">
             <ion-wizard-content class="has-header">
               <ion-list>
-                <ion-item class="item-remove-animate item-avatar item-icon-left body-parts-list" ng-repeat="part in parts" type="item-text-wrap" >
+                <ion-radio class= "item-avatar item-icon-left body-parts-list" ng-repeat="part in parts"
+                  ng-value="part.id"
+                  ng-model="step2.bodyPart">
+                  <img ng-src="{{part.image}}">
+                  <h2>{{part.name}}</h2>
+               </ion-radio>
+                <!-- <ion-item class="item-remove-animate item-avatar item-icon-left body-parts-list" ng-repeat="part in parts" type="item-text-wrap" >
                   <img ng-src="{{part.image}}">
                   <h2>{{part.name}}</h2>
                   <p>{{part.lastText}}</p>
@@ -103,7 +109,7 @@
                   <ion-option-button class="button-assertive" ng-click="remove(chat)">
                     Delete
                   </ion-option-button>
-                </ion-item>
+                </ion-item> -->
               </ion-list>
             <!-- <div class="row">
                 <div class="col col-center">
@@ -188,7 +194,12 @@
             </ion-wizard-content>
         </ion-slide>
         <ion-slide ion-wizard-step class="has-header">
-            <div class="row">
+          <ion-radio class= "item-avatar body-parts-list" ng-repeat="dis in relDisease"
+            ng-value="dis.id"
+            ng-model="step3.disease">
+            <h2>{{dis.name}}</h2>
+         </ion-radio>
+            <!-- <div class="row">
                 <div class="col col-center">
                     <h3 class="positive">Thanks for running the wizard!</h3>
                     <p>As a last step please fill in the field below</p>
@@ -200,7 +211,7 @@
                     </div>
                     <h3 ng-show="step3.something">You can now launch the app using the button above!</h3>
                 </div>
-            </div>
+            </div> -->
         </ion-slide>
     </ion-slide-box>
 

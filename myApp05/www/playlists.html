@@ -1,12 +1,9 @@
-<ion-view title="Playlists">
-  <ion-nav-buttons side="left">
+<script src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
+<ion-view title="מפה">
+  <ion-nav-buttons side="תפריט">
     <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
   </ion-nav-buttons>
-  <ion-content class="has-header">
-    <ion-list>
-      <ion-item ng-repeat="playlist in playlists" href="#/app/playlists/{{playlist.id}}">
-        {{playlist.title}}
-      </ion-item>
-    </ion-list>
+  <ion-content ng-controller="MapController" class="has-header">
+    <div id="map" data-tap-disabled="true"></div>
   </ion-content>
 </ion-view>

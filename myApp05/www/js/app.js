@@ -39,6 +39,11 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ionic.wizard'])
       controller: 'AppCtrl'
     })
 
+    .state('restart', {
+      url: "/restart",
+      controller: 'RestartCtrl'
+    })
+
     .state('app.search', {
       url: "/search",
       views: {
@@ -61,7 +66,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ionic.wizard'])
       views: {
         'menuContent' :{
           templateUrl: "playlists.html",
-          controller: 'PlaylistsCtrl'
+          controller: 'MapController'
         }
       }
     })
