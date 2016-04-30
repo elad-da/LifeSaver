@@ -95,6 +95,7 @@ func main() {
 	}()
 
 	http.HandleFunc("/reports", reportsHandler)
+	http.HandleFunc("/symptoms", symptomsHandler)
 
 	fmt.Println("Listening on port ", AppConf.ListenOnPort)
 	httpErr := http.ListenAndServe(":"+AppConf.ListenOnPort, nil)
@@ -246,31 +247,41 @@ func reportsHandler(response http.ResponseWriter, request *http.Request) {
 				}
 			}
 		}
-
-		//		symId := <-idChan
-		//		countQry := `SELECT Count(*) from Reports WHERE CancelationDate is null
-		//					 And SymptomId = ?`
-
-		//		if cnt, err := DbHelper.GetDbValueInt(AppConf.SqlConnections.SqlConId, countQry, symId); err != nil {
-		//			writeErrorResponse(response, "reportsHandler ", "error get count from db", err)
-		//			return
-		//		} else {
-		//			type rep struct {
-		//				Count int64 `json:"count"`
-		//			}
-		//			var r rep
-		//			r.Count = cnt
-
-		//			PrintAsJson(r)
-		//			if bt, err := json.Marshal(r); err != nil {
-		//				writeErrorResponse(response, "reportsHandler ", "error marshaling count", err)
-		//			} else {
-		//				response.Write(bt)
-		//			}
-		//		}
-
 	}
 
+}
+
+func symptomsHandler(response http.ResponseWriter, request *http.Request) {
+
+	writeHeaders(response)
+	switch request.Method {
+	case "OPTIONS":
+		return
+
+	case "GET":
+		type symptom struct {
+			SymptomId   int64  `json:"symptomId"`
+			Description string `json:"description"`
+			BodyPart    int64  `json:"bodyPart"`
+		}
+		var symptoms []symptom
+		qry := `SELECT SymptomId, Description, BodyPart 
+				FROM Symptoms 
+				WHERE CancelationDate is null
+				Order By BodyPart`
+		if err := DbHelper.SelectToStruct(&symptoms, AppConf.SqlConnections.SqlConId, qry); err != nil {
+			writeErrorResponse(response, "symptomsHandler ", "error get symptoms from db", err)
+			return
+		} else {
+
+			if bt, err := json.Marshal(symptoms); err != nil {
+				writeErrorResponse(response, "symptomsHandler ", "error marshaling symptoms", err)
+			} else {
+				response.Write(bt)
+			}
+		}
+
+	}
 }
 
 func getNearReportsCount(latLng []LatLng, curLat, curLng float64) (int64, error) {
