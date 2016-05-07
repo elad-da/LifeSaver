@@ -15,6 +15,9 @@ import (
 
 	"time"
 
+	"github.com/kellydunn/golang-geo"
+	"gopkg.in/gomail.v2"
+
 	"../Backend/DbHelper"
 	//_ "github.com/alexbrainman/odbc"
 	//_ "github.com/mattn/go-sqlite3"
@@ -22,6 +25,15 @@ import (
 
 const TimeLayoutYYYYMMDD_HHMMSS = "2006-01-02 15:04:05"
 const TimeLayoutYYYYMMDD_HHMMSSms = "2006-01-02 15:04:05.000"
+
+type googleGeocodeResponse struct {
+	Results []struct {
+		AddressComponents []struct {
+			LongName string   `json:"long_name"`
+			Types    []string `json:"types"`
+		} `json:"address_components"`
+	}
+}
 
 type Report struct {
 	Lat       float64 `json:"lat"`
@@ -52,9 +64,14 @@ type Configuration struct {
 }
 
 var AppConf Configuration
-var idChan chan *int64
-var latChan chan float64
-var lngChan chan float64
+
+//var idChan chan *int64
+//var latChan chan float64
+//var lngChan chan float64
+
+var globSymId int64
+var globLat float64
+var globLng float64
 
 //ReadConf reads the configuration file (Algo.conf) and loads it to the AppConf structure
 func ReadConf() error {
@@ -81,15 +98,15 @@ func main() {
 		fmt.Println(err.Error())
 	}
 	DbHelper.InitConnection(AppConf.SqlConnections.SqlConId, AppConf.SqlConnections.SqlDriver, AppConf.SqlConnections.SqlConString)
-	idChan = make(chan *int64)
-	latChan = make(chan float64)
-	lngChan = make(chan float64)
+	//	idChan = make(chan *int64, 256)
+	//	latChan = make(chan float64, 256)
+	//	lngChan = make(chan float64, 256)
 
 	deleteTicker := time.NewTicker(time.Duration(AppConf.DeleteTimer) * time.Second)
 
 	go func() { // TODO :Check all
 		for Event := range deleteTicker.C {
-			fmt.Println(Event)
+			fmt.Println("Checking Old Reports:", Event)
 			checkOldReports()
 		}
 	}()
@@ -103,6 +120,22 @@ func main() {
 		fmt.Println("The process exited with error: ", httpErr.Error())
 	}
 
+}
+
+func sendEmail(cityName string, threshold int64) error {
+	m := gomail.NewMessage()
+	m.SetAddressHeader("From", "eladzada1988@gmail.com", "LifeSaver")
+	m.SetAddressHeader("To", "eladzada1988@gmail.com", "")
+	m.SetHeader("Subject", "Possible Epidemic!")
+	//TODO : complete identification
+	m.SetBody("text/plain", "There is a possibility for epidemic near "+cityName+" ,Over "+fmt.Sprint(threshold)+" patients have been identified in...")
+
+	d := gomail.NewPlainDialer("smtp.gmail.com", 587, "eladzada1988", "elad7717")
+
+	if err := d.DialAndSend(m); err != nil {
+		return fmt.Errorf(err.Error())
+	}
+	return nil
 }
 
 func checkOldReports() {
@@ -125,8 +158,11 @@ func checkOldReports() {
 			fmt.Println("No New Reports")
 			return
 		}
+		fmt.Println("Active records: ", len(records))
 		for _, val := range records {
+
 			exp, err := getExpiryTime(val.SymptomId) // TODO : build a wrapper for id and expiry
+			//fmt.Println("Here")
 			if err != nil {
 				fmt.Println("getExpiryTime, ", err.Error())
 				return
@@ -149,7 +185,6 @@ func checkOldReports() {
 					fmt.Println("success delete report, id: ", val.RecNo, " at time: ", time.Now().Format(TimeLayoutYYYYMMDD_HHMMSS))
 				}
 			}
-
 		}
 	}
 
@@ -169,7 +204,7 @@ func deleteOldReport(recNo int64) error {
 func getExpiryTime(symId int64) (int64, error) {
 
 	qry := `SELECT Expiry from Symptoms WHERE CancelationDate is null
-			And SymptomId = ?`
+			And SymptomId = ? LIMIT 1`
 
 	if exp, err := DbHelper.GetDbValueInt(AppConf.SqlConnections.SqlConId, qry, symId); err != nil {
 		return -1, err
@@ -207,48 +242,82 @@ func reportsHandler(response http.ResponseWriter, request *http.Request) {
 				return
 			} else {
 				PrintAsJson(report)
-				go sendDetails(report.SymptomId, report.Lat, report.Lng)
+				globSymId = *report.SymptomId
+				globLat = report.Lat
+				globLng = report.Lng
 				if err := insertReport(AppConf.SqlConnections.SqlConId, report); err != nil {
 					writeErrorResponse(response, "reportsHandler ", "error insert user to db", err)
 					return
 				} else {
-					response.Write([]byte("ok"))
+					if err := responseReleventRepCnt(response, *report.SymptomId, report.Lat, report.Lng); err != nil {
+						writeErrorResponse(response, "reportsHandler ", "error response Relevent Reports Count", err)
+					}
+					//response.Write([]byte(`{"Status": "ok"}`))
 				}
 			}
 		}
 
 	case "GET":
-		symId := <-idChan
-		curLat := <-latChan
-		cutLng := <-lngChan
-		qry := `SELECT Lat,Lng from Reports WHERE CancelationDate is null
-					 And SymptomId = ? Order By RecNo`
+		//		symId := <-idChan
+		//		curLat := <-latChan
+		//		curLng := <-lngChan
+		//		qry := `SELECT Lat,Lng from Reports WHERE CancelationDate is null
+		//					 And SymptomId = ? Order By RecNo`
 
-		var latLng []LatLng
-		if err := DbHelper.SelectToStruct(&latLng, AppConf.SqlConnections.SqlConId, qry, symId); err != nil {
-			writeErrorResponse(response, "reportsHandler ", "error get lat and lng from db", err)
-			return
-		} else {
-			PrintAsJson(latLng)
-			if cnt, err := getNearReportsCount(latLng, curLat, cutLng); err != nil { //TODO : Send notification if there is a new Possible pandemic
-				writeErrorResponse(response, "reportsHandler ", "error get relevant amount of reports", err)
-			} else {
-				type rep struct {
-					Count int64 `json:"count"`
-				}
-				var r rep
-				r.Count = cnt
+		//		var latLng []LatLng
+		//		if err := DbHelper.SelectToStruct(&latLng, AppConf.SqlConnections.SqlConId, qry, globSymId); err != nil {
+		//			writeErrorResponse(response, "reportsHandler ", "error get lat and lng from db", err)
+		//			return
+		//		} else {
+		//			PrintAsJson(latLng)
+		//			if cnt, err := getNearReportsCount(latLng, globLat, globLng, globSymId); err != nil { //TODO : Send notification if there is a new Possible pandemic
+		//				writeErrorResponse(response, "reportsHandler ", "error get relevant amount of reports", err)
+		//			} else {
+		//				type rep struct {
+		//					Count int64 `json:"count"`
+		//				}
+		//				var r rep
+		//				r.Count = cnt
 
-				PrintAsJson(r)
-				if bt, err := json.Marshal(r); err != nil {
-					writeErrorResponse(response, "reportsHandler ", "error marshaling count", err)
-				} else {
-					response.Write(bt)
-				}
-			}
-		}
+		//				PrintAsJson(r)
+		//				if bt, err := json.Marshal(r); err != nil {
+		//					writeErrorResponse(response, "reportsHandler ", "error marshaling count", err)
+		//				} else {
+		//					response.Write(bt)
+		//				}
+		//			}
+		//		}
 	}
 
+}
+
+func responseReleventRepCnt(response http.ResponseWriter, symId int64, lat, lng float64) error {
+	qry := `SELECT Lat,Lng from Reports WHERE CancelationDate is null
+					 And SymptomId = ? Order By RecNo`
+
+	var latLng []LatLng
+	if err := DbHelper.SelectToStruct(&latLng, AppConf.SqlConnections.SqlConId, qry, symId); err != nil {
+		return fmt.Errorf("error get lat and lng from db ", err)
+	} else {
+		PrintAsJson(latLng)
+		if cnt, err := getNearReportsCount(latLng, lat, lng, symId); err != nil { //TODO : Send notification if there is a new Possible pandemic
+			return fmt.Errorf("error get relevant amount of reports ", err)
+		} else {
+			type rep struct {
+				Count int64 `json:"count"`
+			}
+			var r rep
+			r.Count = cnt
+
+			PrintAsJson(r)
+			if bt, err := json.Marshal(r); err != nil {
+				return fmt.Errorf("error marshaling count ", err)
+			} else {
+				response.Write(bt)
+			}
+		}
+		return nil
+	}
 }
 
 func symptomsHandler(response http.ResponseWriter, request *http.Request) {
@@ -284,7 +353,7 @@ func symptomsHandler(response http.ResponseWriter, request *http.Request) {
 	}
 }
 
-func getNearReportsCount(latLng []LatLng, curLat, curLng float64) (int64, error) {
+func getNearReportsCount(latLng []LatLng, curLat, curLng float64, symId int64) (int64, error) {
 
 	if len(latLng) == 0 {
 		return 0, fmt.Errorf("No lat lng to check")
@@ -305,6 +374,9 @@ func getNearReportsCount(latLng []LatLng, curLat, curLng float64) (int64, error)
 			count++
 		}
 	}
+
+	go checkEpidemicOutbreak(curLat, curLng, int64(count), symId)
+
 	return int64(count), nil
 }
 
@@ -315,17 +387,83 @@ func inRange(target, up, down float64) bool {
 	return false
 }
 
-func sendDetails(id *int64, lat, lng float64) {
-	idChan <- id
-	latChan <- lat
-	lngChan <- lng
+//func sendDetails(id *int64, lat, lng float64) {
+//	idChan <- id
+//	latChan <- lat
+//	lngChan <- lng
+//}
+
+func checkEpidemicOutbreak(lat, lng float64, count, symId int64) {
+
+	qry := `SELECT EpidemicThreshold from Symptoms where SymptomId = ? limit 1`
+
+	if threshold, err := DbHelper.GetDbValueInt(AppConf.SqlConnections.SqlConId, qry, symId); err != nil {
+		fmt.Println(err)
+		return
+	} else {
+		if count+1 >= int64(threshold) {
+			fmt.Println("Epidemic found at: ", time.Now())
+			cityName := reverseGeocode(lat, lng)
+			if err := sendEmail(cityName, count+1); err != nil {
+				fmt.Println(err.Error())
+			}
+		} else {
+			fmt.Println("No Epidemic Found")
+		}
+	}
+
+}
+
+func getCityNameByGeo(lat, lng float64) (string, error) {
+	p := geo.NewPoint(lat, lng)
+	geocoder := new(geo.GoogleGeocoder)
+	geo.HandleWithSQL()
+	data, err := geocoder.Request(fmt.Sprintf("latlng=%f,%f", p.Lat(), p.Lng()))
+	if err != nil {
+		return "", fmt.Errorf(err.Error())
+	}
+	var res googleGeocodeResponse
+	if err := json.Unmarshal(data, &res); err != nil {
+		return "", fmt.Errorf(err.Error())
+	}
+	var city string
+	if len(res.Results) > 0 {
+		r := res.Results[0]
+	outer:
+		for _, comp := range r.AddressComponents {
+			// See https://developers.google.com/maps/documentation/geocoding/#Types
+			// for address types
+			for _, compType := range comp.Types {
+				if compType == "locality" {
+					city = comp.LongName
+					break outer
+				}
+			}
+		}
+	}
+	fmt.Printf("City: %s\n", city)
+	return city, nil
+}
+
+func reverseGeocode(lat, lng float64) string {
+	p := geo.NewPoint(lat, lng)
+	geocoder := new(geo.GoogleGeocoder)
+	geo.HandleWithSQL()
+	res, err := geocoder.ReverseGeocode(p)
+	if err != nil {
+		fmt.Printf(err.Error())
+		return fmt.Sprintf("latlng=%f,%f", p.Lat(), p.Lng())
+	} else {
+		return res
+	}
+
 }
 
 func insertReport(conKey string, r Report) error {
 
 	qry := `INSERT INTO Reports(Lat, Lng, Gender, SymptomId, Comments, InsertionTime) values (?,?,?,?,?,?)`
 	if _, err := DbHelper.Execute(AppConf.SqlConnections.SqlConId, qry, r.Lat, r.Lng, r.Gender,
-		r.SymptomId, r.Comments, time.Now().Format(TimeLayoutYYYYMMDD_HHMMSS)); err != nil {
+		r.SymptomId, r.Comments, time.Now()); err != nil {
 		fmt.Println(err)
 		return err
 	}
