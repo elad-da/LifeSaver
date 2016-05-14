@@ -11,7 +11,7 @@ import (
 	"path/filepath"
 	//"strings"
 	//"strconv"
-	//"strings"
+	"strings"
 
 	"time"
 
@@ -43,6 +43,12 @@ type Report struct {
 	Comments  *string `json:"comments"`
 }
 
+type Option struct {
+	Range     float64 `json:"range"`
+	Precision int64   `json:"precision"`
+	Emails    string  `json:"emails"`
+}
+
 type LatLng struct {
 	Lat float64 `db:"Lat"`
 	Lng float64 `db:"Lng"`
@@ -58,20 +64,11 @@ type SqlConnection struct {
 type Configuration struct {
 	ListenOnPort   string
 	SqlConnections SqlConnection
-	Range          float64
-	Precision      int64
 	DeleteTimer    int64
 }
 
 var AppConf Configuration
-
-//var idChan chan *int64
-//var latChan chan float64
-//var lngChan chan float64
-
-var globSymId int64
-var globLat float64
-var globLng float64
+var Options []Option
 
 //ReadConf reads the configuration file (Algo.conf) and loads it to the AppConf structure
 func ReadConf() error {
@@ -98,9 +95,10 @@ func main() {
 		fmt.Println(err.Error())
 	}
 	DbHelper.InitConnection(AppConf.SqlConnections.SqlConId, AppConf.SqlConnections.SqlDriver, AppConf.SqlConnections.SqlConString)
-	//	idChan = make(chan *int64, 256)
-	//	latChan = make(chan float64, 256)
-	//	lngChan = make(chan float64, 256)
+
+	if err := loadOptions(); err != nil {
+		fmt.Println(err.Error())
+	}
 
 	deleteTicker := time.NewTicker(time.Duration(AppConf.DeleteTimer) * time.Second)
 
@@ -122,19 +120,37 @@ func main() {
 
 }
 
-func sendEmail(cityName string, threshold int64) error {
-	m := gomail.NewMessage()
-	m.SetAddressHeader("From", "eladzada1988@gmail.com", "LifeSaver")
-	m.SetAddressHeader("To", "eladzada1988@gmail.com", "")
-	m.SetHeader("Subject", "Possible Epidemic!")
-	//TODO : complete identification
-	m.SetBody("text/plain", "There is a possibility for epidemic near "+cityName+" ,Over "+fmt.Sprint(threshold)+" patients have been identified in...")
+func loadOptions() error {
 
-	d := gomail.NewPlainDialer("smtp.gmail.com", 587, "eladzada1988", "elad7717")
-
-	if err := d.DialAndSend(m); err != nil {
-		return fmt.Errorf(err.Error())
+	qry := `SELECT Range, Precision, Emails from Options`
+	if err := DbHelper.SelectToStruct(&Options, AppConf.SqlConnections.SqlConId, qry); err != nil {
+		fmt.Println("Error Loading Otions, ", err)
+		return err
 	}
+	fmt.Println("Success Loading Options")
+	return nil
+
+}
+
+func sendEmail(cityName string, threshold int64) error {
+
+	emails := strings.Split(strings.Join(strings.Fields(Options[0].Emails), ""), ",") //remove white spaces and split
+
+	for _, email := range emails {
+		m := gomail.NewMessage()
+		m.SetAddressHeader("From", "eladzada1988@gmail.com", "LifeSaver")
+		m.SetAddressHeader("To", email, "")
+		m.SetHeader("Subject", "Possible Epidemic!")
+		//TODO : complete identification
+		m.SetBody("text/plain", "There is a possibility for epidemic near "+cityName+" ,Over "+fmt.Sprint(threshold)+" patients have been identified in...")
+
+		d := gomail.NewPlainDialer("smtp.gmail.com", 587, "eladzada1988", "elad7717")
+
+		if err := d.DialAndSend(m); err != nil {
+			return fmt.Errorf(err.Error())
+		}
+	}
+
 	return nil
 }
 
@@ -242,9 +258,9 @@ func reportsHandler(response http.ResponseWriter, request *http.Request) {
 				return
 			} else {
 				PrintAsJson(report)
-				globSymId = *report.SymptomId
-				globLat = report.Lat
-				globLng = report.Lng
+				//				globSymId = *report.SymptomId
+				//				globLat = report.Lat
+				//				globLng = report.Lng
 				if err := insertReport(AppConf.SqlConnections.SqlConId, report); err != nil {
 					writeErrorResponse(response, "reportsHandler ", "error insert user to db", err)
 					return
@@ -360,16 +376,16 @@ func getNearReportsCount(latLng []LatLng, curLat, curLng float64, symId int64) (
 	}
 	fmt.Println(len(latLng))
 	count := -1 //Dont count yourself
-	latUp := toFixed(curLat, AppConf.Precision) + AppConf.Range
-	latDown := toFixed(curLat, AppConf.Precision) - AppConf.Range
+	latUp := toFixed(curLat, Options[0].Precision) + Options[0].Range
+	latDown := toFixed(curLat, Options[0].Precision) - Options[0].Range
 
-	lngUp := toFixed(curLng, AppConf.Precision) + AppConf.Range
-	lngDown := toFixed(curLng, AppConf.Precision) - AppConf.Range
+	lngUp := toFixed(curLng, Options[0].Precision) + Options[0].Range
+	lngDown := toFixed(curLng, Options[0].Precision) - Options[0].Range
 	for _, val := range latLng {
-		lat := toFixed(val.Lat, AppConf.Precision)
-		lng := toFixed(val.Lng, AppConf.Precision)
-		fmt.Println(latUp, lat, latDown)
-		fmt.Println(lngUp, lng, lngDown)
+		lat := toFixed(val.Lat, Options[0].Precision)
+		lng := toFixed(val.Lng, Options[0].Precision)
+		//fmt.Println(latUp, lat, latDown)
+		//fmt.Println(lngUp, lng, lngDown)
 		if inRange(lat, latUp, latDown) && inRange(lng, lngUp, lngDown) {
 			count++
 		}
