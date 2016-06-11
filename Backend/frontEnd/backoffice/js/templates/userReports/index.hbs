@@ -1,0 +1,46 @@
+{{outlet}}
+
+<div class="panel panel-default">
+	<div class="panel-heading">
+		<div class="panel-label">חיפוש</div>
+	</div>
+	<div class="panel-body" style="background-color: #f4f4f4;">
+		  <form>
+
+          <div class="row">
+
+            <div class="col-md-4">
+              <div class="form-group">
+                <label>שם סניף:</label>
+                {{input  type="text" class="form-control" valueBinding="search.storeName"}}
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <div class="form-group">
+                <label>מספר סניף:</label>
+                {{input  type="text" class="form-control" valueBinding="search.storeNo"}}
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <div class="form-group">
+                <label>אזור:</label>
+                {{view Em.Select classNames="form-control" 
+                  contentBinding="App.storesRegions" 
+                  optionValuePath="content.id"
+                  optionLabelPath="content.name"
+                  valueBinding="search.region"
+                  prompt="בחר..."
+                  required="required"}}
+              </div>
+            </div>
+     
+
+        </div>
+
+        </form>
+	</div>
+</div>
+
+{{view GRID.TableView}}

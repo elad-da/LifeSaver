@@ -1,0 +1,34 @@
+{{outlet modal}}
+<div class="container">
+	{{#if hasPermissions}}
+		<div id="header">
+
+			<div class="navbar navbar-default">
+				
+				<ul class="nav navbar-nav">
+
+					<li class="first">{{#linkTo 'symptoms'}}<i class="fa fa-home"></i>סימפטומים{{/linkTo}}</li>
+					<li>{{#linkTo 'users'}}<i class="fa fa-users"></i>מנהלים{{/linkTo}}</li>
+				<!--li>{{#linkTo 'stores'}}<i class="fa fa-home"></i>סניפים{{/linkTo}}</li>
+					<li>{{#linkTo 'vehicles'}}<i class="fa fa-car"></i>כלי רכב{{/linkTo}}</li>
+					<li>
+						{{#linkTo 'vehiclespeedrules'}}
+							<i class="fa fa-car"></i>
+							חוקי מהירות רכב
+						{{/linkTo}}
+				</li-->
+
+				</ul>
+				
+				<ul class="nav navbar-nav pull-left">
+					<li class="last icon">{{#linkTo 'logout'}}<i class="fa fa-power-off"></i>{{/linkTo}}</li>
+				</ul>
+
+
+			</div>
+		</div>
+	{{/if}}
+	<div id="content">
+		{{outlet}}
+	</div>
+</div>	

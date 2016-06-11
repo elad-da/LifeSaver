@@ -1,0 +1,79 @@
+{{#view App.ModalView}}
+<div class="modal-backdrop fade in"></div>
+<div class="modal fade" tabindex="-1">
+  <div class="modal-dialog" style="width: 600px;">
+    <div class="modal-content">
+      <div class="modal-header">
+        {{#linkTo 'symptoms' tag="button" type="button" class="close"}}&times;{{/linkTo}}
+        <h4 class="modal-title">
+          פרטי סימפטומים
+        </h4>
+      </div>     
+      <div class="modal-body">
+        <form id="form">
+          
+          <div class="errors">
+          </div>
+
+          <div class="row">
+
+            <div class="col-md-4">
+              <div class="form-group">
+                {{#unless symptom.isnew}}
+                  <label>מספר סימפטום:</label>
+                  {{input type="text" class="form-control" valueBinding="symptom.symptomId" readonly="readonly"}}
+                {{else}}
+                  <label>מספר סימפטום:</label>
+                  {{input type="text" class="form-control" valueBinding="symptom.symptomId" parsley-type="number" required="required"}}
+                {{/unless}}
+              </div>
+            </div>
+            
+            <div class="col-md-4">
+              <div class="form-group">
+                <label>שם סימפטום:</label>
+                {{input type="text" class="form-control" valueBinding="symptom.description" required="required"}}
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <div class="form-group">
+                <label>חלק בגוף:</label>
+                {{view Em.Select classNames="form-control" 
+                  contentBinding="App.symptomsBodyParts" 
+                  optionValuePath="content.id"
+                  optionLabelPath="content.name"
+                  valueBinding="symptom.bodyPart"
+                  prompt="חלק בגוף..."
+                  required="required"}}
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <div class="form-group">
+                <label>זמן תפוגה (בדקות):</label>
+                {{input type="text" class="form-control" valueBinding="symptom.expiry" parsley-type="number" required="required"}}
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <div class="form-group">
+                <label>סף התפרצות (דיווחים):</label>
+                {{input type="text" class="form-control" valueBinding="symptom.epidemicThreshold" parsley-type="number" required="required"}}
+              </div>
+            </div>
+
+          </div>
+
+        </form>
+      </div>
+      <div class="modal-footer">
+       {{#linkTo 'symptoms' tag="button" type="button" class="btn btn-default"}}ביטול{{/linkTo}}
+        <div class="pull-left">
+          <button {{action "save" symptom view}} type="button" class="btn btn-success">שמור</button>
+        </div>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+{{/view}}

@@ -1,0 +1,32 @@
+{{outlet}}
+
+<div class="panel panel-default">
+	<div class="panel-heading">
+		<div class="panel-label">חיפוש</div>
+	</div>
+	<div class="panel-body" style="background-color: #f4f4f4;">
+		<form>
+
+          <div class="row">
+
+            <div class="col-md-4">
+              <div class="form-group">
+                <label>שם משתמש:</label>
+                {{input  type="text" class="form-control" valueBinding="search.userName"}}
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>דואר אלקטרוני:</label>
+                {{input  type="text" class="form-control" valueBinding="search.email"}}
+              </div>
+            </div>
+		
+        </div>
+
+    </form>
+	</div>
+</div>
+
+{{view GRID.TableView}}

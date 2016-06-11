@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+
+		<meta charset="utf-8">
+		<title>LifeSaver BackOffice</title>
+		<link href="css/normalize.css"  rel="stylesheet" type="text/css">
+		<link href="css/bootstrap.css"  rel="stylesheet" type="text/css">
+		<link href="css/font-awesome.css"  rel="stylesheet" type="text/css">
+		<link href="css/application.css"  rel="stylesheet" type="text/css">
+		<link href="css/bootstrap-datetimepicker.css"  rel="stylesheet" type="text/css">
+		<link href="css/chosen.css"  rel="stylesheet" type="text/css">
+		<link href="css/grid.css"  rel="stylesheet" type="text/css">
+		<link href="css/parsley.css"  rel="stylesheet" type="text/css">
+		<link href="css/rtl.css"  rel="stylesheet" type="text/css">
+		<link href="css/theme.css"  rel="stylesheet" type="text/css">
+
+		<script type="text/javascript">
+			API_URL = '/';
+		</script>
+
+	</head>
+
+	<body>
+
+	  <script src="js/jquery-1.10.2.js" ></script>
+		<script src="js/handlebars-1.1.2.js" ></script>
+		<script src="js/ember-1.2.0.js" ></script>
+		<script src="js/templates-loader.js"></script>
+		<script src="js/bootstrap.js" ></script>
+		<script src="js/libs/moment-with-langs.js" ></script>
+		<script src="js/libs/chosen/chosen.jquery.js" ></script>
+		<script src="js/libs/datetimepicker/bootstrap-datetimepicker.js" ></script>
+		<script src="js/libs/datetimepicker/locales/bootstrap-datetimepicker.he.js" ></script>
+		<script src="js/libs/parsley/parsley.js" ></script>
+		<script src="js/libs/parsley/i18n/messages.he.js" ></script>
+		<script src="js/index.js" ></script>
+		<script src="js/components/datepicker.js" ></script>
+		<script src="js/components/inputDateComponent.js" ></script>
+		<script src="js/components/inputDateTimeComponent.js" ></script>
+		<script src="js/components/inputNumberComponent.js" ></script>
+		<script src="js/components/grid/ember-grid.js" ></script>
+		<script src="js/controllers/application.js" ></script>
+		<script src="js/controllers/userReports/store.js" ></script>
+		<script src="js/controllers/userReports/storesindex.js" ></script>
+		<script src="js/controllers/vehicles/vehicle.js" ></script>
+		<script src="js/controllers/vehicles/vehiclessindex.js" ></script>
+		<script src="js/controllers/symptoms/symptoms.js" ></script>
+		<script src="js/controllers/symptoms/symptomsindex.js" ></script>
+		<script src="js/controllers/users/users.js" ></script>
+		<script src="js/controllers/users/usersindex.js" ></script>
+		<script src="js/controllers/vehiclespeedrules/index.js" ></script>
+		<script src="js/routes/application.js" ></script>
+		<script src="js/routes/index.js" ></script>
+		<script src="js/routes/settings.js" ></script>
+		<script src="js/routes/userReports/edit.js" ></script>
+		<script src="js/routes/userReports/index.js" ></script>
+		<script src="js/routes/userReports/polygon.js" ></script>
+		<script src="js/routes/vehicles/edit.js" ></script>
+		<script src="js/routes/vehicles/index.js" ></script>
+		<script src="js/routes/symptoms/edit.js" ></script>
+		<script src="js/routes/symptoms/index.js" ></script>
+		<script src="js/routes/users/edit.js" ></script>
+		<script src="js/routes/users/index.js" ></script>
+		<script src="js/routes/vehiclespeedrules/index.js" ></script>
+
+		<script type="text/javascript">
+			TemplatesHelper.load([
+				'application',
+				'empty',
+				'index',
+				'application/login',
+				'userReports/confirm',
+				'userReports/index',
+				'userReports/modal',
+				'userReports/polygon',
+				'userReports/grid/actions',
+				'symptoms/confirm',
+				'symptoms/index',
+				'symptoms/modal',
+				'symptoms/grid/actions',
+								'users/confirm',
+				'users/index',
+				'users/modal',
+				'users/grid/actions',
+				'vehicles/confirm',
+				'vehicles/index',
+				'vehicles/modal',
+				'vehicles/grid/actions',
+				'vehiclespeedrules/index',
+				'vehiclespeedrules/grid/actions'
+			]);
+		</script>
+
+	</body>
+
+</html>

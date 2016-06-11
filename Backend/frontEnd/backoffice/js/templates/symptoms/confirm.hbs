@@ -1,0 +1,30 @@
+{{#view App.ModalView}}
+<div class="modal-backdrop fade in"></div>
+<div class="modal fade" tabindex="-1">
+  <div class="modal-dialog" style="width: 400px;">
+    <div class="modal-content">
+      <div class="modal-header">
+        {{#linkTo 'symptoms' tag="button" type="button" class="close"}}&times;{{/linkTo}}
+        <h4 class="modal-title">
+          אשר מחיקה
+        </h4>
+      </div>     
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="alert alert-danger">
+              <p>האם אתה בטוח שברצונך למחוק סימפטום זה?</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+       {{#linkTo 'symptoms' tag="button" type="button" class="btn btn-default"}}ביטול{{/linkTo}}
+        <div class="pull-left">
+          <button {{action "delete" id view}} type="button" class="btn btn-danger">מחק</button>
+        </div>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+{{/view}}

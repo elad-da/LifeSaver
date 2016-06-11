@@ -1,0 +1,442 @@
+{{#view App.ModalView}}
+<div class="modal-backdrop fade in"></div>
+<div class="modal fade" tabindex="-1">
+  <div class="modal-dialog" style="width: 900px;">
+    <div class="modal-content">
+      <div class="modal-header">
+        {{#linkTo 'stores' tag="button" type="button" class="close"}}&times;{{/linkTo}}
+        <h4 class="modal-title">
+          פרטי הסניף
+        </h4>
+      </div>     
+      <div class="modal-body">
+        <form id="form">
+          
+          <div class="errors">
+          </div>
+
+          <div class="row">
+
+            <div class="col-md-2">
+
+              <ul class="nav nav-pills nav-stacked">
+                <li class="active"><a href="#general" data-toggle="tab">כללי</a></li>
+                <li><a href="#makeline" data-toggle="tab">מייקליין</a></li>
+                <li><a href="#assign" data-toggle="tab">ציוות</a></li>
+                <li><a href="#sms" data-toggle="tab">SMS</a></li>
+                <li><a href="#gps" data-toggle="tab">GPS</a></li>
+              </ul>
+
+            </div>
+
+            <div class="col-md-10 tab-content">
+
+              <div class="row tab-pane active" id="general">
+
+                <div class="col-md-8">
+                  <div class="form-group">
+                    <label>שם סניף:</label>
+                    {{input type="text" class="form-control" valueBinding="store.storeName" required="required"}}
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label>מספר סניף:</label>
+                    {{#if store.isnew}}
+                      {{input-number type="text" class="form-control" valueBinding="store.storeNo" parsley-type="digits" required="required"}}
+                    {{else}}
+                      {{input-number type="text" class="form-control" valueBinding="store.storeNo" readonly="readonly"}}
+                    {{/if}}
+                  </div>
+                </div>
+
+                <div class="col-md-8">
+                  <div class="form-group">
+                    <label>כתובת שרת מרכזי:</label>
+                    {{input type="text" class="form-control" valueBinding="store.storeServerIp" required="required"}}
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label>פורט שרת מרכזי:</label>
+                    <div>
+                      {{input-number type="text" class="form-control" valueBinding="store.storeServerPort" parsley-type="digits" required="required"}}
+                    </div>
+                  </div>
+                </div>
+                
+
+                <div class="col-md-12">
+                  <p><strong>מיקום הסניף</strong></p>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label>קו רוחב:</label>
+                    <div>
+                      {{input-number type="text" class="form-control" valueBinding="store.branchLocation.lat" parsley-type="number" required="required"}}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label>קו אורך:</label>
+                    <div>
+                      {{input-number type="text" class="form-control" valueBinding="store.branchLocation.lng" parsley-type="number" required="required"}}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label>אזור:</label>
+                    <div>
+                      {{view Em.Select classNames="form-control" 
+                        contentBinding="App.storesRegions" 
+                        optionValuePath="content.id"
+                        optionLabelPath="content.name"
+                        valueBinding="store.region"
+                        prompt="בחר..."
+                        required="required"}}
+                    </div>
+                  </div>
+                </div>
+
+                <br />
+
+                <div class="col-md-12">
+                  <p><strong>הגדרות נוספות</strong></p>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label>מצב דיבוג:</label>
+                    <div>
+                      {{input-number type="text" class="form-control" valueBinding="store.debugMode" parsley-type="digits"}}
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+              <div class="row tab-pane" id="makeline">
+
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label>זמן הכנה:</label>
+                    <div>
+                      {{input-number type="text" class="form-control" valueBinding="store.prepareSeconds" parsley-type="digits" required="required"}}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label>זמן אפיה:</label>
+                    <div>
+                      {{input-number type="text" class="form-control" valueBinding="store.ovenSeconds" parsley-type="digits" required="required"}}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label>מספר עובדים:</label>
+                    <div>
+                      {{input type="text" class="form-control" valueBinding="store.numberOfMakeLinesEmployees" readonly="readonly"}}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label>זמן חיתוך הזמנה ראשונה:</label>
+                    <div>
+                      {{input-number type="text" class="form-control" valueBinding="store.cutSeconds" parsley-type="digits" required="required"}}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label>זמן חיתוך הזמנה שניה:</label>
+                    <div>
+                      {{input-number type="text" class="form-control" valueBinding="store.cutSecondPizza" parsley-type="digits" required="required"}}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label>מספר הזמנות מקסימלי על המדף:</label>
+                    <div>
+                      {{input-number type="text" class="form-control" valueBinding="store.maxOrdersToHoldOnShelf" parsley-type="digits" required="required"}}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-12">
+                  <p><strong>התראות / מדד לחץ</strong></p>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label>מספר הזמנות להתראה ברמה 1:</label>
+                    <div>
+                      {{input-number type="text" class="form-control" valueBinding="store.makeOrdersLevel0" parsley-type="digits" required="required"}}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label>מספר הזמנות להתראה ברמה 2:</label>
+                    <div>
+                      {{input-number type="text" class="form-control" valueBinding="store.makeOrdersLevel1" parsley-type="digits" required="required"}}
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="col-md-12"></div>
+
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label>מספר הזמנות להתראה ברמה 3:</label>
+                    <div>
+                      {{input-number type="text" class="form-control" valueBinding="store.makeOrdersLevel2" parsley-type="digits" required="required"}}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label>מספר הזמנות להתראה ברמה 4:</label>
+                    <div>
+                      {{input-number type="text" class="form-control" valueBinding="store.makeOrdersLevel3" parsley-type="digits" required="required"}}
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+
+              <div class="row tab-pane" id="assign">
+                
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label>זמן לציוות הזמנה בודדת</label>
+                    <div>
+                    {{input-number type="text" class="form-control" valueBinding="store.timeToWaitForSecondDelivery" parsley-type="digits" required="required"}}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label>זמן מקס' בין משלוחים שיומלצו לזוג</label>
+                    <div>
+                    {{input-number type="text" class="form-control" valueBinding="store.secondsAllowedBetweenCoupledOrders" parsley-type="digits" required="required"}}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label>זמן הכנסת חדשה לציוות עם בתנור</label>
+                    <div>
+                    {{input-number type="text" class="form-control" valueBinding="store.secondsAllowedBetweenPreparedAndOvenOrder" parsley-type="digits" required="required"}}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label>זמן מעצירה לדלת בית הלקוח</label>
+                    <div>
+                    {{input-number type="text" class="form-control" valueBinding="store.secondsFromStopToDoorWay" parsley-type="digits" required="required"}}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label>זמן מקס' להמלצת שלשות</label>
+                    <div>
+                    {{input-number type="text" class="form-control" valueBinding="store.tripletsDistanceInSeconds" parsley-type="digits" required="required"}}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label>זמן להתראת "לא צוותה"</label>
+                    <div>
+                    {{input-number type="text" class="form-control" valueBinding="store.secondsAllowedNotToBeDispatched" parsley-type="digits"}}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label>זמן לק"מ</label>
+                    <div>
+                    {{input-number type="text" class="form-control" valueBinding="store.secondsForKm" parsley-type="digits" required="required"}}
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+              <div class="row tab-pane" id="sms">
+
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label>שם משתמש</label>
+                    <div>
+                    {{input type="text" class="form-control" valueBinding="store.smsUsername"}}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label>סיסמה</label>
+                    <div>
+                    {{input type="text" class="form-control" valueBinding="store.smsPassword"}}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label>שם השולח</label>
+                    <div>
+                    {{input type="text" class="form-control" valueBinding="store.smsSender"}}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <label>מסר לשליחה</label>
+                    <div>
+                    {{textarea class="form-control" valueBinding="store.smsMsgsToSend"}}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label>זמן התראה ללקוח</label>
+                    <div>
+                    {{input class="form-control" valueBinding="store.maxMinutesToNotifyCustomer"}}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <label>קישור למפת השליח</label>
+                    <div>
+                    {{input class="form-control" valueBinding="store.carrierFollowUpLink"}}
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+              <div class="row tab-pane" id="gps">
+
+                <div class="col-md-8">
+                  <div class="form-group">
+                    <label>כתובת שרת GPS</label>
+                    <div>
+                    {{input class="form-control" valueBinding="store.gpsNotificationServerIp"}}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label>פורט שרת GPS</label>
+                    <div>
+                    {{input-number class="form-control" valueBinding="store.gpsNotificationServerPort" parsley-type="digits"}}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label>שם משתמש</label>
+                    <div>
+                    {{input class="form-control" valueBinding="store.gpsUn"}}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label>סיסמה</label>
+                    <div>
+                    {{input class="form-control" valueBinding="store.gpsPw"}}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label>שם רחוב כללי</label>
+                    <div>
+                    {{input class="form-control" valueBinding="store.generalStreetName"}}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label>הפרש זמן בין קופה לשרת GPS</label>
+                    <div>
+                    {{input-number class="form-control" valueBinding="store.timeOffset" parsley-type="digits"}}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label>עדכון סטטוס GPS אחרון</label>
+                    <div>
+                    {{input class="form-control" valueBinding="store.lastGpsStatus" readonly="readonly"}}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label>עדכון מיקום אחרון</label>
+                    <div>
+                    {{input class="form-control" valueBinding="store.lastLocationNotification" readonly="readonly"}}
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </form>
+      </div>
+      <div class="modal-footer">
+       {{#linkTo 'stores' tag="button" type="button" class="btn btn-default"}}ביטול{{/linkTo}}
+        <div class="pull-left">
+          <button {{action "save" store view}} type="button" class="btn btn-success">שמור</button>
+        </div>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+{{/view}}

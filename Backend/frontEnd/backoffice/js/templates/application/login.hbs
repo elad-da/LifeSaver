@@ -1,0 +1,40 @@
+{{#view App.ModalView}}
+<div class="modal-backdrop fade in"></div>
+<div class="modal fade" tabindex="-1">
+  <div class="modal-dialog" style="width: 400px;">
+    <div class="modal-content">
+      <div class="modal-header"><h4>כניסה למערכת</h4></div>     
+      <div class="modal-body">
+        <form>
+          
+          <div class="errors">
+          </div>
+
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group">
+                <label>שם משתמש:</label>
+                {{input type="text" class="form-control" valueBinding="model.username" required="required"}}
+              </div>
+            </div>
+
+            <div class="col-md-12">
+              <div class="form-group">
+                <label>סיסמה:</label>
+                {{input type="password" class="form-control" valueBinding="model.password" required="required"}}
+              </div>
+            </div>
+
+          </div>
+
+        </form>
+      </div>
+      <div class="modal-footer">
+        <div class="pull-left">
+          <button {{action "login" model view}} type="button" class="btn btn-success">כניסה</button>
+        </div>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+{{/view}}

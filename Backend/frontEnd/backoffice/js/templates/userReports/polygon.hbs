@@ -1,0 +1,25 @@
+{{#view App.ModalView}}
+<div class="modal-backdrop fade in"></div>
+<div class="modal fade" tabindex="-1">
+  <div class="modal-dialog" style="width: 900px;">
+    <div class="modal-content">
+      <div class="modal-header">
+        {{#linkTo 'stores' tag="button" type="button" class="close"}}&times;{{/linkTo}}
+        <h4 class="modal-title">
+          פוליגון לסניף
+        </h4>
+      </div>     
+      <div class="modal-body">
+        <form id="form">
+          
+          <div class="errors">
+          </div>
+           <iframe {{bind-attr src=store.polygonEditLink}} class="polygon-iframe" seamless="seamless"></iframe> 
+
+        </form>
+      </div>
+
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+{{/view}}

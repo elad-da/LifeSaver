@@ -1,0 +1,53 @@
+{{#view App.ModalView}}
+<div class="modal-backdrop fade in"></div>
+<div class="modal fade" tabindex="-1">
+  <div class="modal-dialog" style="width: 600px;">
+    <div class="modal-content">
+      <div class="modal-header">
+        {{#linkTo 'users' tag="button" type="button" class="close"}}&times;{{/linkTo}}
+        <h4 class="modal-title">
+          פרטי משתמש
+        </h4>
+      </div>     
+      <div class="modal-body">
+        <form id="form">
+          
+          <div class="errors">
+          </div>
+
+          <div class="row">
+
+            <div class="col-md-4">
+              <div class="form-group">
+                {{#unless user.isnew}}
+                  <label>שם משתמש:</label>
+                  {{input type="text" class="form-control" valueBinding="user.userName" readonly="readonly"}}
+                {{else}}
+                  <label>שם משתמש:</label>
+                  {{input type="text" class="form-control" valueBinding="user.userName" required="required"}}
+                {{/unless}}
+              </div>
+            </div>
+            
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>דואר אלקטרוני:</label>
+                {{input type="text" class="form-control" valueBinding="user.email" required="required"}}
+              </div>
+            </div>
+
+
+          </div>
+
+        </form>
+      </div>
+      <div class="modal-footer">
+       {{#linkTo 'users' tag="button" type="button" class="btn btn-default"}}ביטול{{/linkTo}}
+        <div class="pull-left">
+          <button {{action "save" user view}} type="button" class="btn btn-success">שמור</button>
+        </div>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+{{/view}}

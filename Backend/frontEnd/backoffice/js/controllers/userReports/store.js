@@ -1,0 +1,1 @@
+App.StoreController = Em.Controller.extend({});
