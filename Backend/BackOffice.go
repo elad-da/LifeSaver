@@ -37,35 +37,6 @@ type User struct {
 	Email        DbHelper.DbString `db:"Email" json:"email"`
 }
 
-//func crudSymptomsHandler(response http.ResponseWriter, request *http.Request) {
-//	urlVars := strings.Split(request.URL.Path, "/")
-//	writeHeaders(response)
-//	switch request.Method {
-//	case "OPTIONS":
-//		return
-
-//	case "GET":
-//		if len(urlVars) == 2 || (len(urlVars) == 3 && len(urlVars[2]) == 0) {
-
-//		} else {
-//			fmt.Print("Wrong Route: ", urlVars)
-//			http.Error(response, "No Such Route", http.StatusBadRequest)
-//			return
-//		}
-
-//	case "POST":
-
-//	case "DELETE":
-//		if len(urlVars) == 3 || (len(urlVars) == 4 && len(urlVars[3]) == 0) {
-
-//		} else {
-//			fmt.Print("Wrong Route: ", urlVars)
-//			http.Error(response, "No Such Route", http.StatusBadRequest)
-//			return
-//		}
-//	}
-//}
-
 func selectStatementByDriver(results interface{}, conKey, whClause, ordClause, tableName string,
 	defaultSorter []string) (resultSql string, countSql string) {
 
@@ -129,18 +100,6 @@ func crudSymptomsHandler(response http.ResponseWriter, request *http.Request) {
 		getGenericBoList, checkToken, []string{"SymptomId"}, false)
 	return
 }
-
-//func vehiclesHandler(response http.ResponseWriter, request *http.Request) {
-//	//Get Data From request
-
-//	var vehicles []VehicleBO
-//	if request.Method != "GET" && request.Method != "VIEW" {
-//		vehicles = append(vehicles, VehicleBO{})
-//	}
-//	CrudHnd.CrudHandler(DbConIdAlgo, response, request, "vehicles", &vehicles,
-//		getGenericBoList, checkToken, []string{"id"}, false)
-//	return
-//}
 
 func boUsersHandler(response http.ResponseWriter, request *http.Request) {
 	var users []User
