@@ -1,4 +1,3 @@
-// Sensors
 package main
 
 import (
@@ -9,8 +8,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-	//"strings"
-	//"strconv"
+	"strconv"
 	"strings"
 
 	"time"
@@ -36,22 +34,22 @@ type googleGeocodeResponse struct {
 }
 
 type Report struct {
-	Lat       float64 `json:"lat"`
-	Lng       float64 `json:"lng"`
-	Gender    *int64  `json:"gender"`
-	SymptomId *int64  `json:"symptomId"`
-	Comments  *string `json:"comments"`
+	Lat       *DbHelper.DbFloat  `json:"lat"`
+	Lng       *DbHelper.DbFloat  `json:"lng"`
+	Gender    *DbHelper.DbInt    `json:"gender"`
+	SymptomId *DbHelper.DbInt    `json:"symptomId"`
+	Comments  *DbHelper.DbString `json:"comments"`
 }
 
 type Option struct {
-	Range     float64 `json:"range"`
-	Precision int64   `json:"precision"`
-	Emails    string  `json:"emails"`
+	Range     DbHelper.DbFloat  `json:"range"`
+	Precision DbHelper.DbInt    `json:"precision"`
+	Emails    DbHelper.DbString `json:"emails"`
 }
 
 type LatLng struct {
-	Lat float64 `db:"Lat"`
-	Lng float64 `db:"Lng"`
+	Lat DbHelper.DbFloat `db:"Lat"`
+	Lng DbHelper.DbFloat `db:"Lng"`
 }
 
 type SqlConnection struct {
@@ -110,7 +108,19 @@ func main() {
 	}()
 
 	http.HandleFunc("/reports", reportsHandler)
-	http.HandleFunc("/symptoms", symptomsHandler)
+	http.HandleFunc("/getsymptoms", symptomsHandler)
+	http.HandleFunc("/getsymptoms/", symptomsHandler)
+
+	http.HandleFunc("/symptoms", crudSymptomsHandler)
+	http.HandleFunc("/symptoms/", crudSymptomsHandler)
+
+	http.HandleFunc("/users", boUsersHandler)
+	http.HandleFunc("/users/", boUsersHandler)
+
+	http.HandleFunc("/login", loginHandler)
+
+	http.HandleFunc("/backoffice/", FrontEndHandler)
+	http.HandleFunc("/combos/", combosHandler)
 
 	fmt.Println("Listening on port ", AppConf.ListenOnPort)
 	httpErr := http.ListenAndServe(":"+AppConf.ListenOnPort, nil)
@@ -132,17 +142,27 @@ func loadOptions() error {
 
 }
 
-func sendEmail(cityName string, threshold int64) error {
+func sendEmail(cityName string, threshold, symId int64) error {
 
-	emails := strings.Split(strings.Join(strings.Fields(Options[0].Emails), ""), ",") //remove white spaces and split
+	//emails := strings.Split(strings.Join(strings.Fields(Options[0].Emails), ""), ",") //remove white spaces and split
+
+	type data struct {
+		Email DbHelper.DbString
+	}
+	var emails []data
+	qry := `select Email from Users order by 1 desc`
+	if err := DbHelper.SelectToStruct(&emails, AppConf.SqlConnections.SqlConId, qry); err != nil {
+		fmt.Println("Error Select Emials, ", err)
+		return err
+	}
 
 	for _, email := range emails {
 		m := gomail.NewMessage()
 		m.SetAddressHeader("From", "eladzada1988@gmail.com", "LifeSaver")
-		m.SetAddressHeader("To", email, "")
+		m.SetAddressHeader("To", email.Email.GetValue(), "")
 		m.SetHeader("Subject", "Possible Epidemic!")
 		//TODO : complete identification
-		m.SetBody("text/plain", "There is a possibility for epidemic near "+cityName+" ,Over "+fmt.Sprint(threshold)+" patients have been identified in...")
+		m.SetBody("text/plain", "There is a possibility for epidemic near "+cityName+" ,Over "+fmt.Sprint(threshold)+" patients have been identified in Symptom number: "+fmt.Sprint(symId))
 
 		d := gomail.NewPlainDialer("smtp.gmail.com", 587, "eladzada1988", "elad7717")
 
@@ -156,6 +176,12 @@ func sendEmail(cityName string, threshold int64) error {
 
 func checkOldReports() {
 
+	qryFixNull := `UPDATE Reports SET CancelationDate = ? WHERE SymptomId is null`
+	if _, err := DbHelper.Execute(AppConf.SqlConnections.SqlConId, qryFixNull, time.Now().Format(TimeLayoutYYYYMMDD_HHMMSS)); err != nil {
+		fmt.Println("Error Fixing null columns", err)
+		//return
+	}
+
 	qry := `SELECT RecNo, SymptomId, InsertionTime from Reports WHERE CancelationDate is null
 			Order By RecNo`
 
@@ -167,7 +193,7 @@ func checkOldReports() {
 	var records []record
 	if err := DbHelper.SelectToStruct(&records, AppConf.SqlConnections.SqlConId, qry); err != nil {
 		fmt.Println("Error selecting to struct, ", err)
-		return
+		//return
 	} else {
 
 		if len(records) == 0 {
@@ -265,7 +291,7 @@ func reportsHandler(response http.ResponseWriter, request *http.Request) {
 					writeErrorResponse(response, "reportsHandler ", "error insert user to db", err)
 					return
 				} else {
-					if err := responseReleventRepCnt(response, *report.SymptomId, report.Lat, report.Lng); err != nil {
+					if err := responseReleventRepCnt(response, report.SymptomId.GetValue(), report.Lat.GetValue(), report.Lng.GetValue()); err != nil {
 						writeErrorResponse(response, "reportsHandler ", "error response Relevent Reports Count", err)
 					}
 					//response.Write([]byte(`{"Status": "ok"}`))
@@ -337,32 +363,70 @@ func responseReleventRepCnt(response http.ResponseWriter, symId int64, lat, lng 
 }
 
 func symptomsHandler(response http.ResponseWriter, request *http.Request) {
-
+	urlVars := strings.Split(request.URL.Path, "/")
 	writeHeaders(response)
 	switch request.Method {
 	case "OPTIONS":
 		return
 
 	case "GET":
-		type symptom struct {
-			SymptomId   int64  `json:"symptomId"`
-			Description string `json:"description"`
-			BodyPart    int64  `json:"bodyPart"`
-		}
-		var symptoms []symptom
-		qry := `SELECT SymptomId, Description, BodyPart 
+		if len(urlVars) == 2 || (len(urlVars) == 3 && len(urlVars[2]) == 0) {
+			type symptom struct {
+				SymptomId   int64  `json:"symptomId"`
+				Description string `json:"description"`
+				BodyPart    int64  `json:"bodyPart"`
+			}
+			var symptoms []symptom
+			qry := `SELECT SymptomId, Description, BodyPart 
 				FROM Symptoms 
 				WHERE CancelationDate is null
 				Order By BodyPart`
-		if err := DbHelper.SelectToStruct(&symptoms, AppConf.SqlConnections.SqlConId, qry); err != nil {
-			writeErrorResponse(response, "symptomsHandler ", "error get symptoms from db", err)
-			return
-		} else {
-
-			if bt, err := json.Marshal(symptoms); err != nil {
-				writeErrorResponse(response, "symptomsHandler ", "error marshaling symptoms", err)
+			if err := DbHelper.SelectToStruct(&symptoms, AppConf.SqlConnections.SqlConId, qry); err != nil {
+				writeErrorResponse(response, "symptomsHandler ", "error get symptoms from db", err)
+				return
 			} else {
-				response.Write(bt)
+
+				if bt, err := json.Marshal(symptoms); err != nil {
+					writeErrorResponse(response, "symptomsHandler ", "error marshaling symptoms", err)
+				} else {
+					response.Write(bt)
+				}
+			}
+		} else if len(urlVars) > 2 {
+			if len(urlVars) == 3 || (len(urlVars) == 4 && len(urlVars[3]) == 0) {
+				if id, err := strconv.Atoi(urlVars[2]); err != nil {
+					fmt.Println(err.Error())
+					http.Error(response, "Id should be an Integer", http.StatusBadRequest)
+					return
+				} else {
+					if (id < 1) || (id > 8) {
+						http.Error(response, "Wrong id request, id should be between 1 to 8", http.StatusBadRequest)
+						return
+					}
+					type symp struct {
+						SymptomId   int64  `json:"symptomId"`
+						Description string `json:"description"`
+					}
+					var sympsByBodyPart []symp
+					qry := `SELECT SymptomId, Description
+							FROM Symptoms
+							WHERE BodyPart = ? and CancelationDate is null
+							Order By SymptomId`
+					if err := DbHelper.SelectToStruct(&sympsByBodyPart, AppConf.SqlConnections.SqlConId, qry, id); err != nil {
+						writeErrorResponse(response, "symptomsHandler ", "error get symptoms from db", err)
+						return
+					} else {
+						if bt, err := json.Marshal(sympsByBodyPart); err != nil {
+							writeErrorResponse(response, "symptomsHandler ", "error marshaling symptoms", err)
+						} else {
+							response.Write(bt)
+						}
+					}
+				}
+			} else {
+				fmt.Print("Wrong Route: ", urlVars)
+				http.Error(response, "No Such Route", http.StatusBadRequest)
+				return
 			}
 		}
 
@@ -376,14 +440,14 @@ func getNearReportsCount(latLng []LatLng, curLat, curLng float64, symId int64) (
 	}
 	fmt.Println(len(latLng))
 	count := -1 //Dont count yourself
-	latUp := toFixed(curLat, Options[0].Precision) + Options[0].Range
-	latDown := toFixed(curLat, Options[0].Precision) - Options[0].Range
+	latUp := toFixed(curLat, Options[0].Precision.GetValue()) + Options[0].Range.GetValue()
+	latDown := toFixed(curLat, Options[0].Precision.GetValue()) - Options[0].Range.GetValue()
 
-	lngUp := toFixed(curLng, Options[0].Precision) + Options[0].Range
-	lngDown := toFixed(curLng, Options[0].Precision) - Options[0].Range
+	lngUp := toFixed(curLng, Options[0].Precision.GetValue()) + Options[0].Range.GetValue()
+	lngDown := toFixed(curLng, Options[0].Precision.GetValue()) - Options[0].Range.GetValue()
 	for _, val := range latLng {
-		lat := toFixed(val.Lat, Options[0].Precision)
-		lng := toFixed(val.Lng, Options[0].Precision)
+		lat := toFixed(val.Lat.GetValue(), Options[0].Precision.GetValue())
+		lng := toFixed(val.Lng.GetValue(), Options[0].Precision.GetValue())
 		//fmt.Println(latUp, lat, latDown)
 		//fmt.Println(lngUp, lng, lngDown)
 		if inRange(lat, latUp, latDown) && inRange(lng, lngUp, lngDown) {
@@ -420,7 +484,7 @@ func checkEpidemicOutbreak(lat, lng float64, count, symId int64) {
 		if count+1 >= int64(threshold) {
 			fmt.Println("Epidemic found at: ", time.Now())
 			cityName := reverseGeocode(lat, lng)
-			if err := sendEmail(cityName, count+1); err != nil {
+			if err := sendEmail(cityName, count+1, symId); err != nil {
 				fmt.Println(err.Error())
 			}
 		} else {
@@ -478,8 +542,8 @@ func reverseGeocode(lat, lng float64) string {
 func insertReport(conKey string, r Report) error {
 
 	qry := `INSERT INTO Reports(Lat, Lng, Gender, SymptomId, Comments, InsertionTime) values (?,?,?,?,?,?)`
-	if _, err := DbHelper.Execute(AppConf.SqlConnections.SqlConId, qry, r.Lat, r.Lng, r.Gender,
-		r.SymptomId, r.Comments, time.Now()); err != nil {
+	if _, err := DbHelper.Execute(AppConf.SqlConnections.SqlConId, qry, r.Lat.GetValue(), r.Lng.GetValue(), r.Gender.GetValue(),
+		r.SymptomId.GetValue(), r.Comments.GetValue(), time.Now()); err != nil {
 		fmt.Println(err)
 		return err
 	}
@@ -529,4 +593,28 @@ func PrintAsJson(in ...interface{}) {
 			fmt.Println(string(bt))
 		}
 	}
+}
+
+func FrontEndHandler(response http.ResponseWriter, request *http.Request) {
+	_, execDir := getCurrentDir()
+	//fmt.Println(request.URL.Path, execDir+"/FrontEnd/."+request.URL.Path)
+	//#1304 start
+	localFile := execDir + "/FrontEnd/." + request.URL.Path
+
+	if qry := request.URL.Query(); len(qry) > 0 && qry.Get("default") == "true" {
+		if _, err := os.Stat(localFile); err != nil {
+			sp := strings.Split(localFile, "/")
+			filename := "/default"
+			if filenameAr := strings.Split(sp[len(sp)-1], "."); len(filenameAr) > 1 {
+				filename += "." + filenameAr[1]
+			}
+			sp = sp[:len(sp)-1]
+			localFile = strings.Join(sp, "/") + filename
+			fmt.Println(localFile)
+		}
+	}
+	response.Header().Add("Cache-Control", fmt.Sprintf("max-age=%d, public, must-revalidate, proxy-revalidate", 1))
+
+	http.ServeFile(response, request, localFile)
+	//#1304 end
 }
