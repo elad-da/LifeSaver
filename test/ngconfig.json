@@ -1,0 +1,9 @@
+{
+  "app_name": "angularApp",
+  "uglify_js": true,
+  "port": 3080,
+  "live_reload": true,
+  "lrPort": 35729,
+  "run_server": true,
+  "host": "127.0.0.1"
+}

@@ -1,0 +1,18 @@
+{
+  "name": "angularApp",
+  "version": "0.0.0",
+  "description": "",
+  "dependencies": {
+    "angular-deferred-bootstrap": "~0.1.5",
+    "angular-mocks": "latest",
+    "angular": "latest",
+    "angular-route": "latest"
+  },
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
