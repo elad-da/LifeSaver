@@ -1,4 +1,4 @@
-var map, lat, long, marker, circle;
+var map, lat, long, marker, circle, interval;
 
 angular.module('starter.controllers', [])
 .factory('Data', function(){
@@ -68,6 +68,7 @@ angular.module('starter.controllers', [])
 
     map = maptize($cordovaGeolocation, $scope);
     $scope.report = function(gender, age, sympId) {
+      $scope.reportButton = true;
       if(confirm("דיווח מחלה, האם את/ה בטוח?")){
         myLatLng = {lat: lat, lng: long}
         marker = new google.maps.Marker({
@@ -80,15 +81,17 @@ angular.module('starter.controllers', [])
 
     };
     $scope.cleanOverlays = function(){
-      circle.setMap(null);
-      marker.setMap(null);
+      if(typeof circle !== "undefined")
+        circle.setMap(null);
+      if(typeof marker !== "undefined")
+        marker.setMap(null);
+      if(typeof interval !== "undefined")
+        clearInterval(interval);
     }
     $http.get("http://52.38.110.193:8092/getsymptoms")
     .then(function(response) {
         $scope.relDisease = response.data;
     });
-
-
 
     $scope.startCondition = function() {
         return angular.isDefined($scope.step3.disease);
@@ -208,7 +211,7 @@ function circlize(myLatLng){
     center: myLatLng,
     radius: 0
   });
-  setInterval(function() {
+  interval = setInterval(function() {
     maxRad = 800;
     rad = circle.getRadius();
     if(rad < maxRad){

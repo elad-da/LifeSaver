@@ -1,7 +1,20 @@
 /* Styles go here */
 
+
+
 img{
   max-height: 120vw;
+}
+.agree-terms{
+  font-size: 20px;
+  padding: 10px;
+}
+.theroot{
+  height: 85%;
+}
+.fusion-four-fifth{
+  direction: rtl;
+  padding: 20px;
 }
 .center{
   text-align: center;

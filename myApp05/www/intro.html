@@ -1,6 +1,6 @@
 <ion-view>
     <ion-nav-buttons side="left">
-        <button class="button button-light no-animation" ion-wizard-start="report( step1.gender, step1.age, step3.symptomId )" condition="startCondition()" ng-click="" confirm="Are you sure?">
+        <button class="button button-light no-animation" ion-wizard-start="report( step1.gender, step1.age, step3.symptomId )" condition="startCondition()" ng-click="" >
             דווח
         </button>
         <button class="button button-light no-animation" ion-wizard-next>
@@ -14,12 +14,132 @@
 
     </ion-nav-buttons>
     <ion-slide-box ion-wizard>
+      <ion-slide ion-wizard-step next-condition="step0.agree">
+          <ion-wizard-content class="has-header center">
+            <ion-scroll direction="y" class="theroot">
+              <div class="fusion-four-fifth fusion-layout-column fusion-spacing-yes" style="margin-top:0px;margin-bottom:20px;"><div class="fusion-column-wrapper"><h1 style="text-align: right;" data-fontsize="34" data-lineheight="47"><strong>תנאי שימוש באפליקציה EpiTrack</strong></h1>
+                <h2 style="text-align: right;" data-fontsize="18" data-lineheight="27">1.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="text-decoration: underline;"> כללי</span></h2>
+                <p style="text-align: right;">1.1.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ברוכים הבאים לאפליקציה <strong>EpiTrack</strong>  (להלן: "<strong>האפליקציה</strong>").</p>
+                <p style="text-align: right;">1.2.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; האפליקציה הינה&nbsp; בבעלות חברת<strong> ש.מ.ר אנרגיה בע"מ</strong> (להלן: "<strong>הבעלים</strong>") וכל שימוש בה על ידך כפוף להוראות תנאי השימוש להלן.</p>
+                <p style="text-align: right;">1.3.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; בהעדר הסכמה לאילו מהתנאים הכלולים בתנאי שימוש אלו, עליך להימנע מלעשות כל שימוש באפליקציה.</p>
+                <p style="text-align: right;"><strong>1.4.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; בבחירתך לעשות שימוש כלשהו באפליקציה הנך להסכים לתנאי שימוש אלו במלואם.</strong></p>
+                <p style="text-align: right;"><strong>1.5.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; הבעלים שומרים לעצמם את הזכות לשנות תנאי שימוש אלו, והנך להסכים בזאת כי בכל שימוש שלך באפליקציה לאחר המועד שבו תנאים אלו השתנו הלך לקבל על עצמך את הגרסה המעודכנת.</strong></p>
+                <p style="text-align: right;"><strong>1.6.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; אם הנך מתחת לגיל 18, אינך מורשה להשתמש באפליקציה זו או לבצע כל פעילות בה.</strong></p>
+                <p style="text-align: right;">1.7.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; האפליקציה נועדה לסייע למשתמש בניהול העסק, לרבות בניהול קופת העסק, בכפוף לתנאי שימוש אלו.</p>
+                <p style="text-align: right;">1.8.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; תנאי שימוש אלו חלים על האפליקציה ו/או חלקים ממנה ועל השימוש בה ובתכנים הכלולים בה, לרבות על עיצובים, קוד מקור, מודולי תוכנה ותכנים ו/או מוצרים ו/או שירותים כלשהם של האפליקציה ו/או שהאפליקציה מאפשרת נגישות ו/או הורדה שלהם, והם מהווים חלק בלתי נפרד מהם ומתפקוד האפליקציה ו/או משירותים המוצעים בה ו/או באמצעותה, בתמורה או שלא בתמורה (להלן, ביחד ולחוד: "<strong>השירותים</strong>").</p>
+                <p style="text-align: right;"><strong>1.9.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; הסדרת רישיונות כלשהם לצורך שימוש באפליקציה (כגון רישיון נהיגה, רישיון עסק וכו'), כמו גם ביטוח מכל סוג, תשלומי מיסים והוצאות והסדרה של עניינים אחרים הנובעים מהוראות החוק לצורך ביצוע פעילות עסקית או אחרת באמצעות אפליקציה זו, הנם באחריותך בלבד.</strong></p>
+                <p style="text-align: right;"><strong>1.10.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; השימוש במידע, במוצרים ו/או בשירותים כלשהם באמצעות האפליקציה ובכלל הינם באחריותך הבלעדית ובכפוף להוראות תנאי שימוש אלו.</strong></p>
+                <p style="text-align: right;"><strong>1.11.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; הנך להסכים בזאת במפורש כי הבעלים פטורים לחלוטין מכל אחריות, נזק או אי נוחות, לך או לאחרים, לגבי כל היבט של שימוש באפליקציה/במוצרים/בשירותים באמצעות האפליקציה או שיסופקו לך באמצעותה והנך לקחת את כל האחריות לכך על עצמך בלבד .</strong></p>
+                <p style="text-align: right;"><strong>1.12.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; הנך לאשר כי אין לבעלים כל מעורבות בעסק המנוהל על-ידך באפליקציה למעט שמירת הנתונים אותם תזין לאפליקציה וביצוע חישובים מתמטיים בהם. לפיכך, האחריות לוודא כי פעולותייך בהקשר של האפליקציה הינן חוקיות מוטלת על כתפייך בלבד.</strong></p>
+                <p style="text-align: right;"><strong>1.13.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; האחריות לבדיקת נכונות הנתונים המוזנים ו/או המופקים באמצעות האפליקציה מוטלת עלייך בלבד.</strong></p>
+                <p style="text-align: right;"><strong>1.14.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; המשתמש הינו הגורם האחראי לניהול התכנים באפליקציה, לרבות: העלאת והורדת קבצים, תמונות ומידע, ניהול משתמשים, ניהול לקוחות, ניהול מלאי, הפקת דו"חות, ניהול חשבוניות, ניהול קטלוג, ניהול עובדים, ניהול שירותי האפליקציה עצמה ו/או כל שירות עתידי שיפותח ע"י הבעלים. הפעולות המנויות דלעיל מתבצעות ע"י המשתמש, והבעלים לא יישא באחריות בגינן.</strong></p>
+                <h2 style="text-align: right;" data-fontsize="18" data-lineheight="27">2.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="text-decoration: underline;">תנאי השימוש</span></h2>
+                <p style="text-align: right;">2.1.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; תנאי שימוש אלו נועדו להבהיר מה הם התנאים החלים על כל מי שעשה, עושה ו/או יעשה שימוש באפליקציה.</p>
+                <p style="text-align: right;">2.2.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; בתנאי שימוש אלו, הביטוי "תוכן" כולל כל שירות, מוצר, קוד מקור, מודול תוכנה, יישום תוכנה, טקסט, תצלום, תמונה, עיצוב, איור, מפה, קטע צליל, קטע וידיאו, גרפיקה, ביטוי, יצירה, ידע או מידע אחר, בשלמותם ו/או בחלקם, המוצגים באפליקציה זו ו/או שימשו לתכנונה/אפיונה ו/או המוזנים אליה ו/או הכלולים בה ו/או הממוענים אליה/ממנה, וזאת בכל אמצעי תקשורת ו/או קשר, בין בתשלום ובין בלא תשלום, על ידך ו/או צד שלישי כלשהו, וכן כל זכות קניין רוחני, לרבות, אך לא רק, פטנטים, סימני מסחר&nbsp; זכויות יוצרים וזכויות מוסרית, המתייחסות לאלו מהם.</p>
+                <p style="text-align: right;">2.3.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; כל שימוש שייעשה בתנאי שימוש אלו בלשון זכר או בלשון נקבה הינו לצרכי נוחות בלבד, והפנייה היא לנשים ולגברים כאחד. כמו-כן, כל פניה ליחיד משמעה גם פנייה לרבים ולהפך.</p>
+                <p style="text-align: right;">2.4.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; הוראות תנאי שימוש אלו הן מצטברות ו/או חלופיות ו/או משלימות, לפי העניין והקשר הדברים.</p>
+                <h2 style="text-align: right;" data-fontsize="18" data-lineheight="27">3.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="text-decoration: underline;">הגישה לאפליקציה</span></h2>
+                <p style="text-align: right;">3.1.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; יכול שהגישה לאפליקציה או חלקה, והאפשרות לבצע פעולות מסוימות, תתאפשר למשתמשים מסוימים אך תהא מוגבלת למשתמשים אחרים, מסיבות כאלה ואחרות, &nbsp;או לא תתאפשר כלל ו/או תהא כרוכה בהקצאת שם משתמש ו/או סיסמה ו/או תהא מותנית במילוי שאלון ו/או מסירת פרטים אישיים, הכל לפי שיקול דעתם המוחלט והבלעדי של הבעלים.</p>
+                <p style="text-align: right;">3.2.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; הבעלים יוכלו להתחיל לדרוש זאת ללא הודעה מוקדמת, או להוסיף לדרוש זאת, או להפסיק לדרוש זאת, או לעשות כן מדי פעם בפעם, ללא הודעה מוקדמת, ולפי שיקול דעתם המוחלט והבלעדי.</p>
+                <h2 style="text-align: right;" data-fontsize="18" data-lineheight="27">4.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="text-decoration: underline;"> שימוש במידע שמסרת</span></h2>
+                <p style="text-align: right;">4.1.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; אם מסרת כתובת דואל (email), הנך מסכים בזאת לקבל הודעות לכתובת דואל אותה מסרת לצרכים שונים, ובכלל זה פרסומות, הזמנות, הצעות הודעות ומסרים מסחריים מכל סוג. הנך רשאי לבקש להפסיק שיגור של הודעות כאמור בהתאם להוראות כל דין.</p>
+                <p style="text-align: right;">4.2.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ע"י השימוש באפליקציה הנך להסכים בזאת לאיסוף והתחקות אחר נתונים, מידע, תוכן, פעולות והרגלי שימוש שלך ואלו ישמשו לצרכים שונים, לרבות מסחריים ושיווקיים, למעט אמצעי ופרטי התשלום.</p>
+                <h2 style="text-align: right;" data-fontsize="18" data-lineheight="27">5.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="text-decoration: underline;">סוגי התכנים באפליקציה</span></h2>
+                <p style="text-align: right;">5.1.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; הבעלים שומרים לעצמם את הזכות לבחור האם ואלו תכנים יופיעו ו/או יפורסמו, או יפסיקו/יוסיפו להופיע ו/או להתפרסם באפליקציה, או יופיעו/יתפרסמו מדי פעם בפעם, הכל לפי שיקול דעתם הבלעדי והמוחלט, ולפי צרכיהם המסחריים, וללא הודעה מראש או עדכון בדיעבד.</p>
+                <p style="text-align: right;">5.2.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; הבעלים עשויים לשנות, להוסיף, לגרוע, למחוק ולעדכן מעת לעת את תכני האפליקציה ו/או מראה האפליקציה ו/או אופן הפעלתה ו/או אופן השימוש בה ו/או מוצרים ו/או שירותים הכלולים בה, ללא הודעה מוקדמת ולפי שיקול דעתם הבלעדי.</p>
+                <p style="text-align: right;">5.3.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; הבעלים שומרים לעצמם את הזכות לכלול באפליקציה תכנים המהווים פרסומות שלהם ו/או של אחרים ו/או תכנים מסחריים אחרים כלשהם (להלן: "<strong>פרסומות</strong>").</p>
+                <p style="text-align: right;">5.4.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; תמונות, אילוסטרציות והדמיות המופיעות באפליקציה הינן להמחשה בלבד, ואינן מחייבות את הבעלים.</p>
+                <p style="text-align: right;">5.5.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; הפרסומות שיופיעו באפליקציה ו/או שיישלחו למשתמשים בה, הינן באחריות המלאה והבלעדית של המפרסמים.</p>
+                <p style="text-align: right;">5.6.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; בתכני האפליקציה עלולות ליפול שגיאות לרבות במועדים, מחירים, תנאי תשלום ועוד, והבעלים שומרים על זכותם לתקן כל טעות כאמור בכל עת.</p>
+                <h2 style="text-align: right;" data-fontsize="18" data-lineheight="27">6.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="text-decoration: underline;">חיפוש תכנים באפליקציה</span></h2>
+                <p style="text-align: right;">הבעלים שומרים לעצמם את הזכות להפעיל דרכי גישה, אמצעי חיפוש ו/או מנועי חיפוש באפליקציה, שיאפשרו גישה לתכנים מסוימים באפליקציה או חלק ממנה עפ"י בחירת&nbsp; הבעלים, וכן לשנות ו/או להפסיק לעשות כן, והכל לפי שיקול דעתם הבלעדי.</p>
+                <h2 style="text-align: right;" data-fontsize="18" data-lineheight="27">7.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="text-decoration: underline;">זמינות תכנים באפליקציה</span></h2>
+                <p style="text-align: right;">הנך לאשר כי יתכנו תקלות כאלה ואחרות, הנובעות מסיבות כאלה ואחרות, העלולות למנוע את הגישה ו/או השימוש באפליקציה, או להכביד עליהם, לרבות עקב קשיי תקשורת ו/או לשם תחזוקה ו/או מטעמים אחרים, ויכול שהשימוש באפליקציה ייקטע ו/או יופסק ללא השלמה ו/או שמירה. הבעלים יהיו פטורים מכל אחריות לכך, ועליך לשמור מראש כל מידע שבדעתך לעשות בו שימוש או להזין לאפליקציה, בטרם עשותך כן.</p>
+                <h2 style="text-align: right;" data-fontsize="18" data-lineheight="27">8.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="text-decoration: underline;">תפקוד מכשירים</span></h2>
+                <p style="text-align: right;">מבלי לגרוע מן האמור לעיל, הנך מאשר כי ידוע לך כי במקרים מסויימים השימושיות של האפליקציה תלויה בתפקוד תקין של המכשיר כגון הסמארטפון או טאבלט שברשותך ורכיבים הכלולים בו כי GPS, BlueTooth ועוד. אשר איכותם, אי דיוקם, שיבוש בהם ותקלות, עלולים להפריע לחוויית השימוש שלך באפליקציה. הבעלים יהיו פטורים מכל אחריות לכך.</p>
+                <p style="text-align: right;">8.1.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; המשתמש נוטל על עצמו את מלוא האחריות לתקינות ו/או זמינות מלוא השירותים והרכיבים הדרושים לצורך קבלת שירותי האפליקציה ואשר ניתנים לו על ידי צד שלישי כלשהו, לרבות תקינות הרשת הסלולארית וזמינותה, שירותי אינטרנט, תקינות רכיבי היישומים הדרושים וכל ציוד נלווה בו נעשה שימוש לצורך שירותי האפליקציה.</p>
+                <p style="text-align: right;">8.2.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; האחריות המלאה והבלעדית לכל ההשלכות אשר ינבעו מכישלון ברשת הסלולארית אליה משתייך המכשיר הנייד של המשתמש, תחול על המשתמש בלבד.</p>
+                <p style="text-align: right;">8.3.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; המשתמש אחראי על פרטי הזיהוי שלו (שם משמש וסיסמא), ומתחייב לא להעבירם לצד שלישי.</p>
+                <p style="text-align: right;">8.4.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; המשתמש אחראי ליידע את החברה, מיד עם היוודע הדבר, על כל חשיפה של פרטי הזיהוי האישי של המשתמש לאחרים.</p>
+                <p style="text-align: right;">8.5.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; המשתמש מתחייב ליידע את החברה, מיד עם היוודע הדבר, על כל אירוע אשר יש בו אפשרות השלכה על חשבון המשתמש והשימוש בו, לרבות באירועים הבאים:</p>
+                <p style="text-align: right;">·&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; מכשיר הטלפון הסלולארי שלו אבד/נגנב.</p>
+                <p style="text-align: right;">·&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; נודע לו כי נעשה שימוש לא מורשה בחשבון.</p>
+                <p style="text-align: right;">·&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; המשתמש יהא אחראי בגין כל שימוש אשר ייעשה בחשבונו, לרבות שימוש שאינו מורשה על ידו.</p>
+                <h2 style="text-align: right;" data-fontsize="18" data-lineheight="27">9.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="text-decoration: underline;">הזמנת מוצרים ו/או שירותים של האפליקציה</span></h2>
+                <p style="text-align: right;">9.1.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; התשלום בעד שירותי האפליקציה יכול שיתבצע דרך האפליקציה ו/או דרך אתר חיצוני ו/או ע"י פנייה לבעלים ו/או בכל דרך אחרת.</p>
+                <p style="text-align: right;">9.2.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; הנך מאשר בזאת לבעלים לעשות שימוש חופשי בנתוני הרכישה שלך, למעט פרטי התשלום בהם ייעשה שימוש בכפוף להסכמתך המפורשת בלבד.</p>
+                <p style="text-align: right;">9.3.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; רכישת מוצרים ו/או שירותים על ידך, ככל שתהא כזאת, הינה בכפוף &nbsp;להוראות דיני מדינת ישראל, תנאי שימוש אלו, ושיקול דעתם המוחלט והבלעדי של הבעלים.</p>
+                <p style="text-align: right;">9.4.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; מחירי שירותי האפליקציה עשויים להתעדכן ולהשתנות מעת לעת לפי שיקול דעת הבעלים.</p>
+                <p style="text-align: right;">9.5.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; לבעלים שמורה הזכות לבטל הצעה או עסקה, ובלבד שהודעה על כך תינתן למזמין בתוך פרק זמן סביר ממועד אישור הרכישה, בכפוף להחזר התשלומים בגין הרכישה ו/או ההצעה, ככל ששולמו עד אותו מועד.</p>
+                <p style="text-align: right;">9.6.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; הבעלות במוצר ו/או שירות שהבעלים סיפקו למזמין תישאר בבעלות הבעלים עד לפירעון כל התשלומים בפועל לכלל המוצרים שהוזמנו .</p>
+                <p style="text-align: right;"><strong>9.7.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; האחריות על טיב ו/או איכות המוצרים, ו/או השירותים ו/או ייצורם של אלו ו/או על פגמים ו/או נזקים בגינם הינם רק של מי שסיפק אותם בפועל.</strong></p>
+                <p style="text-align: right;"><strong>9.8.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="text-decoration: underline;">מוסכם במפורש כי בכל מקרה של אי התאמה בין המוצרים ו/או השירותים המוזמנים למסופקים, חוסר תיאום מספק בין המזמין לספק, אי דיוק של נתוני כתובת או נתונים אחרים בין הצדדים, איחורים, טיב השירותים, וכיוב', על המזמין לפנות לספק לעניין זה בכפוף לכל דין.</span></strong></p>
+                <p style="text-align: right;"><strong>9.9.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; אחריות כלשהי של הבעלים בגין מוצרים ו/או שירותים כלשהם הינה בכפוף לכל דין ובכל מקרה לא תעלה בהיקפה הכספי על המחיר ששולם בפועל לרכישתם, ככל ששולם, ובכפוף לכל דין.</strong></p>
+                <h2 style="text-align: right;" data-fontsize="18" data-lineheight="27">10.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="text-decoration: underline;">הזנת תכנים לאפליקציה</span></h2>
+                <p style="text-align: right;">10.1.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; אם במסגרת שימוש באפליקציה, חיפוש, הזמנת מוצרים ו/או שירותים ו/או פעילות אחרת באמצעות האפליקציה, האפליקציה תאפשר לך להזין מידע ו/או תכנים כלשהם, האחריות על תכנים אלו, משמעותם ועצם הזנתם תחול עליך בלבד.</p>
+                <p style="text-align: right;">10.2.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; מבלי לגרוע מהאמור לעיל, אין להזין לאפליקציה ו/או להפיץ ממנה ו/או באמצעותה תוכן כלשהו שעלול לפגוע באדם כלשהו, שמו הטוב, פרטיותו, קנייניו או זכויותיו, ואין להזין תכנים לאפליקציה בניגוד להוראות תנאי שימוש אלו ו/או הוראות כל דין.</p>
+                <p style="text-align: right;"><strong>10.3.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; הבעלים שומרים לעצמם את הזכות, לערוך, לשנות ואף למחוק תכנים כאלו. הנך לתת בזאת את הסכמתך המפורשת לעריכת שינויי תוכן ו/או עריכה ו/או מחיקה של תכנים כלשהם שהוזנה לאפליקציה.</strong></p>
+                <p style="text-align: right;">10.4.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; זו זכותך לפנות לבעלים ולבקש מחיקה של תכנים שהזנת לאפליקציה והבעלים ישתדלו למלא אחר בקשתך, אולם הם אינם מתחייבים לעשות כן.</p>
+                <p style="text-align: right;">10.5.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; האחריות <strong>לכל מעשה או מחדל שאינם עולים בקנה אחד עם האמור לעיל הינה עליך בלבד.</strong></p>
+                <h2 style="text-align: right;" data-fontsize="18" data-lineheight="27">11.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; קישורים, פרסומות והפניות מהאפליקציה</h2>
+                <p style="text-align: right;">באפליקציה יכול שתהיה הפניה לתכנים, פרסומות ומקורות שאינם בשליטה ו/או פיקוח של הבעלים. לפיכך אם יופיע בהם חומר פוגעני, בלתי מוסרי, בלתי חוקי, או אם ייגרם באמצעותם ו/או בגינם נזק מכל זוג, אזי לבעלים ו/או מי מטעמם אין ולא תהא כל אחריות על כך.</p>
+                <h2 style="text-align: right;" data-fontsize="18" data-lineheight="27">12.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; זכויות בעלות וזכויות קניין רוחני</h2>
+                <p style="text-align: right;">12.1.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; זכויות הקניין הרוחני מוגנות בישראל ובחו"ל מכוח חוקי מדינת ישראל ואמנות בינלאומיות.</p>
+                <p style="text-align: right;">12.2.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; הבעלים מכבדים זכויות בעלות וזכויות קניין רוחני של אחרים, וגם עליך לעשות כן.</p>
+                <p style="text-align: right;">12.3.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; אפליקציה זו ותכניה הם הרכוש הבלעדי של בעלי זכויות הקניין בהם, ואינם רכושך, ואין לעשות בהם כל שימוש אלא בכפוף לתנאי שימוש אלו.</p>
+                <p style="text-align: right;">12.4.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; אלא אם הוסכם במפורש אחרת מראש ובכתב, יש לראות את המידע ו/או זכויות הקניין הרוחני באפליקציה כשל הבעלים בלבד ו/או כמותרים לשימוש הבעלים ע"י צדדים שלישיים, ובכלל זה זכויות יוצרים, זכויות מוסריות, סימני מסחר, סימני שרות, שמות מסחריים, מדגמים, פטנטים, יצירות, עיצובים, אמצאות, סודות מסחריים, מידע טכנולוגי, מידע פונקציונאלי, מידע מקצועי, מידע מסחרי ועסקי, וכל מידע ו/או זכות קניין רוחני, בין שנרשמה, ובין שלא נרשמה (להלן: "<strong>זכויות הקניין הרוחני</strong>").</p>
+                <p style="text-align: right;">12.5.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; צדדים שלישיים בעלי זכויות קניין רוחני בתכנים שהוזנו לאפליקציה ללא ידיעת הבעלים של &nbsp;ו/או הסכמתם, מתבקשים לפנות לבעלים ו/או למי מטעמם ולדווח להם על כך.</p>
+                <p style="text-align: right;">12.6.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; הבעלים שומרים לעצמם את הזכות לאכוף, להסיר, לשנות, לתקן, ולמנוע כל שימוש ו/או הזנה לאפליקציה ו/או פרסום של תכנים המפרים זכויות קניין רוחני שלהם ו/או של צדדים שלישיים, ולדרוש כל פיצוי ו/או שיפוי מכל מי שעלול להעמיד את עצמו ו/או את הבעלים במצב של הפרה אפשרית של זכויותיהם ו/או של אחרים.</p>
+                <h2 style="text-align: right;" data-fontsize="18" data-lineheight="27">13.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; שימוש באפליקציה</h2>
+                <p style="text-align: right;">13.1.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; השימוש באפליקציה יהיה למטרות המוגדרות בסעיף 1.7 דלעיל בלבד.</p>
+                <p style="text-align: right;">13.2.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; אין לעשות באפליקציה ו/או בתכניה כל שימוש פוגעני באדם כלשהו, שמו הטוב, פרטיותו, או זכויותיו, ואין לעשות שימוש כלשהו באפליקציה ו/או בתכניה שהינו בניגוד לתנאי שימוש אלו ו/או הוראות כל דין, נוהג, או תקנת הציבור.</p>
+                <p style="text-align: right;">13.3.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; הנך מתחייב בזאת לבדוק ולוודא כי כל פעולותייך בהקשר לשימוש באפליקציה זו עולות בקנה אחד עם החוק. עוד הנך מתחייב כי האפליקצייה לא תשרת אותך לפעילות שאינה חוקית או הונאה, לרבות שידול לפעילות בלתי חוקית או הונאה.</p>
+                <p style="text-align: right;">13.4.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; כל שימוש באפליקציה ו/או בתכנים כלשהם הכלולים בה ו/או נלקחו ממנה, הינם לשימוש אישי בלבד, ואין לעשות כל שימוש אחר לרבות עסקי, שיווקי או מסחרי, אלא אם יותר לעשות כן ע"י הבעלים במפורש, מראש ובהיתר בכתב, ובהתאם לתנאי ההיתר.</p>
+                <p style="text-align: right;">13.5.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; בכלל זה, ומבלי לגרוע מכלליות האמור לעיל, אין לנצל איזו מזכויות הקניין הרוחני של הבעלים ו/או צד שלישי ללא הסכמתם, לרבות, אך לא רק, בדרך של גזירה, העתקה, שמירה כקובץ, שכפול, הפצה, עיבוד, מחיקה, תוספת, שינוי, מכירה, השכרה, השאלה, מסירה, הצגה פומבית, ביצוע פומבי, יצירת יצירה ניגזרת, או כל דרך אחרת.</p>
+                <p style="text-align: right;">13.6.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; העושה כן ללא היתר מפורש מאת הבעלים, מראש ובכתב, ככל שיינתן ובכפוף לתנאיו, מסתכן בהעמדה לדין פלילי ובהליכים אזרחיים, לרבות צווי מניעה, חיפוש, תפיסה, תביעות כספיות, עיכוב טובין, מעצר, מאסר, וכל אמצעי אכיפה אחר ו/או נוסף שהבעלים ימצאו לנכון.</p>
+                <p style="text-align: right;">13.7.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; אין ולא יהיה בהיתר שיינתן לך ע"י הבעלים לעשות שימוש בתכנים כלשהם באפליקציה, אם וככל שיינתן, כדי לגרוע מזכויות הבעלים, לרבות זכויות בעלות בכלל, וזכויות הקניין הרוחני בפרט, ולא ישתמע ממעשה או מחדל כלשהו של הבעלים משום הסכמה להעברה ו/או למתן שימוש בזכות קניין רוחני כלשהי או זכות אחרת לבעל ההיתר או לאדם אחר, אלא אם הוסכם על כך במפורש, מראש ובכתב, ובכפוף לזכויות השייכות לבעלים, או שהאחרונים קיבלו מצדדים שלישיים, ובכפוף להוראות כל דין.</p>
+                <p style="text-align: right;">13.8.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; מבלי לגרוע מהאמור לעיל, "שימוש הוגן" ביצירה, כמשמעותו בכל דין הינו מותר למטרת לימוד עצמי, מחקר, ביקורת, סקירה, דיווח עיתונאי, הבאת מובאות, הוראה ובחינה על ידי מוסד חינוך, בכפוף לכל דין בישראל בלבד. בכל שימוש הוגן, חובה לתת קרדיט למחבר התוכן ולאפליקציה. אין להטיל בתוכן כל פגם, או לעשות בו כל סילוף או שינוי צורה אחר, או פעולה פוגענית אחרת, אם יש באילו מהם כדי לפגוע בכבודו או בשמו של היוצר.</p>
+                <h2 style="text-align: right;" data-fontsize="18" data-lineheight="27">14.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; תקופת התנסות</h2>
+                <p style="text-align: right;">14.1.&nbsp;&nbsp;&nbsp;&nbsp; הבעלים יכולים (אך אינם חייבים) להעניק לך "תקופת התנסות" באפליקצייה.</p>
+                <p style="text-align: right;">14.2.&nbsp;&nbsp;&nbsp;&nbsp; משך תקופת ההתנסות תיקבע ע"י הבעלים, זאת מבלי שיידרשו לנמק את הסיבה לכך.</p>
+                <p style="text-align: right;">14.3.&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;תקופת ההתנסות יכולה להסתיים בכל רגע נתון, ללא הודעה מוקדמת.</p>
+                <h2 style="text-align: right;" data-fontsize="18" data-lineheight="27">15.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; פטור מאחריות</h2>
+                <p style="text-align: right;">15.1.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>האפליקציה והתכנים הכלולים בה, מוצגים ומוצעים לשימוש במצבם כפי שהוא ("As Is").</strong> הבעלים שומרים לעצמם את הזכות להוסיף כלים ושירותים נוספים לאפליקציה באמצעות הפצת גרסאות מעודכנות. הזכות להוסיף כלים נוספים נתונה לבעלים ו/או למי מטעמם בלבד, והמשתמש אינו יכול לדרוש פיתוחים או דברים שהאפליקציה אינה תומכת בהם.</p>
+                <p style="text-align: right;"><strong>15.2.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; הבעלים לא יישאו באחריות כלשהי, חוזית ו/או נזיקית ו/או אחרת, לשימוש כלשהו שייעשה באפליקציה ו/או בישומייה, ו/או למניעה ו/או להפרעה משימוש באפליקציה מסיבה כלשהי.</strong></p>
+                <p style="text-align: right;"><strong>15.3.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; הבעלים לא יישאו באחריות כלשהי לתכנים שיימסרו או יוזנו על ידך, חוקיותם, אמינותם, מהימנותם, דיוקם, שלמותם, קבצי מחשב שיצורפו אליהם, ולכל נזק, הפסד, עגמת נפש או תוצאות, במישרין או בעקיפין, לך ו/או לצד שלישי כלשהו.</strong></p>
+                <p style="text-align: right;"><strong>15.4.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; הבעלים לא יישאו בכל אחריות לכל נזק עקב הורדת האפליקציה ו/או נזק שנבע מקישור הכלול באפליקציה ולכל נזק שנבע מהצגה או מפרסום של תכנים כאמור בכל דרך אחרת. כמו כן, אחריות המלאה והבלעדית לכל קישור, הצגה או פרסום של התכנים שנעשו על ידך הנם עליך והנך להתחייב בזאת לשפות את הבעלים בגין כל נזק שייגרם כתוצאה מכך.</strong></p>
+                <p style="text-align: right;"><strong>15.5.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; הבעלים לא מתחייבים לשמור תכנים כלשהם שהזנת לאפליקציה, ו/או שהורדת מהאפליקציה, והאחריות על שמירת תכנים באמצעים שלך, הינם בלתי תלויים בבעלים ו/או באפליקציה ו/או במי הקשור עימם, והיא עליך בלבד. שמירת תכנים כאלו הינה בכפוף להוראות כל דין ותנאי שימוש אלו.</strong></p>
+                <p style="text-align: right;"><strong>15.6.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; הנך להצהיר בזאת כי כל אחריות וסיכון לכל נזק ו/או הפסד שייגרמו לך בגין השימוש באפליקציה הינם עליך, לרבות: תאונות, עוגמת נפש, היבטים כלכליים וכל נזק אחר. כן יצויין כי השימוש במכשיר הנייד בזמן נסיעה הינו אסור ומסוכן לך ולסביבתך.</strong></p>
+                <h2 style="text-align: right;" data-fontsize="18" data-lineheight="27">16.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="text-decoration: underline;">שיפוי</span></h2>
+                <p style="text-align: right;">הנך להתחייב לשפות ולפצות את הבעלים ו/או כל מי מטעמם, בגין כל מעשה ו/או מחדל שגרם לבעלים נזק ישיר או עקיף, הפסד, אבדן-רווח, תשלום או הוצאה, בין עקב הפרת תנאי שימוש אלו, בין עקב הפרת הוראות כל דין, ובין עקב כל טענה או תביעה מצד שלישי כלשהו.</p>
+                <h2 style="text-align: right;" data-fontsize="18" data-lineheight="27">17.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; סמכות שיפוט</h2>
+                <p style="text-align: right;">דיני מדינת ישראל בלבד&nbsp;יחולו על הוראות תנאי שימוש אלו ופרשנותם, ומקום הבוררות והשיפוט יהיו בבית המשפט המוסמך במחוז תל אביב או מחוז מרכז בלבד.</p>
+                <h2 style="text-align: right;" data-fontsize="18" data-lineheight="27">18.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; שינויים בתנאי שימוש</h2>
+                <p style="text-align: right;">יכול שבהוראות תנאי שימוש אלו יחולו מעת לעת שינויים, עדכונים, תוספות, מחיקות, לפי שיקול דעתם המוחלט והבלעדי של הבעלים, עליהם תפורסם הודעה. אם הינך מעוניין להמשיך לעשות שימוש באפליקציה זו, ייראו אותך כמסכים לתנאים המתוקנים, אלא אם הם יעמדו בסתירה להוראות החוק.</p>
+                <h2 style="text-align: right;" data-fontsize="18" data-lineheight="27">19.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ביטול עסקה</h2>
+                <p style="text-align: right;">ביטול עסקת ההתקשרות לקבלת שירותי האפליקציה תהא בהתאם לחוק הגנת הצרכן ולתקנות. ככל&nbsp; שהביטול יבוקש לאחר שכבר הוחל במתן השירות יידרש המשתמש לשלם לעוסק את החלק היחסי עבור השימוש בשירות שנעשה עד לאותו המועד.</p>
+                <h2 style="text-align: right;" data-fontsize="18" data-lineheight="27">20.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; פנה אלינו</h2>
+                <p style="text-align: right;">נשתדל לטפל בפניות מתאימות אלינו בהקדם האפשרי. פניות כאמור יש להעביר לפי הפרטים להלן:</p>
+                <p style="text-align: right;">שם:</p>
+                <p style="text-align: right;">כתובת:</p>
+                <p style="text-align: right;">טלפון:</p>
+                <p style="text-align: right;">פקס:</p>
+                <p style="text-align: right;">EMAIL:</p>
+              <div class="fusion-clearfix"></div></div></div>
+            </ion-scroll>
+            <div class="agree-terms">
+              <strong>קראתי ואני מסכים לתנאי השימוש</strong>
+              <input type="checkbox" class="gender-input" ng-model="step0.agree">
+            </div>
+          </ion-wizard-content>
+      </ion-slide>
         <ion-slide ion-wizard-step next-condition="step1.age && step1.gender">
             <ion-wizard-content class="has-header center">
               <h2>:הכנס גיל ובחר מין</h2>
               <div class="center gender">
-                <img ng-src="/img/female.png" ng-click="step1.gender = 2" class="center human-body"></img>
-                <img ng-src="/img/male.png" ng-click="step1.gender = 1" class="center human-body"></img>
+                <img src="" alt="" />
+                <img ng-src="img/female.png" ng-click="step1.gender = 2" class="center human-body"></img>
+                <img ng-src="img/male.png" ng-click="step1.gender = 1" class="center human-body"></img>
               </div>
               <div class="center age">
                 <label class="item item-input">
@@ -36,7 +156,8 @@
               <ion-radio class= "item-avatar item-icon-left body-parts-list" ng-repeat="part in parts"
                 ng-value="part.id"
                 value="{{ part.id }}"
-                ng-model="step2.bodyPart">
+                ng-model="step2.bodyPart"
+                name="{{ part.name }}">
                 <img ng-src="{{part.image}}">
                 <h2>{{part.name}}</h2>
              </ion-radio>
@@ -48,7 +169,8 @@
           <ion-radio class= "item-avatar body-parts-list" ng-repeat="dis in relDisease | filter:{ bodyPart: chosenBodyPart }"
             ng-value="dis.symptomId"
             ng-model="step3.disease"
-            ng-click="step3.symptomId = {{ dis.symptomId }}">
+            ng-click="step3.symptomId = {{ dis.symptomId }}"
+            name="{{ dis.symptomId }}">
             <h2>{{dis.description}}</h2>
          </ion-radio>
          <input type="hidden" class="symptomId-input" ng-model="step3.symptomId">
