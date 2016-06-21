@@ -1,6 +1,7 @@
+
 <ion-view>
     <ion-nav-buttons side="left">
-        <button class="button button-light no-animation" ion-wizard-start="report( step1.gender, step1.age, step3.symptomId )" condition="startCondition()" ng-click="" >
+        <button class="button button-light no-animation" ng-disabled="isDisabled" ion-wizard-start="report( step1.gender, step1.age, step3.symptomId )" condition="startCondition()" ng-click="" >
             דווח
         </button>
         <button class="button button-light no-animation" ion-wizard-next>
@@ -8,8 +9,11 @@
         </button>
     </ion-nav-buttons>
     <ion-nav-buttons side="right">
-        <button ng-click="cleanOverlays()" class="button button-light no-animation" ion-wizard-previous >
+        <button ng-click="cleanOverlays()" ng-show="showPreviousButton" class="button button-previous button-light no-animation" ion-wizard-previous >
             קודם
+        </button>
+        <button ng-click="newReport()" ng-show="showNewReportButton" class="button button-light no-animation" >
+            דיווח חדש
         </button>
 
     </ion-nav-buttons>
@@ -138,14 +142,13 @@
               <h2>:הכנס גיל ובחר מין</h2>
               <div class="center gender">
                 <img src="" alt="" />
-                <img ng-src="img/female.png" ng-click="step1.gender = 2" class="center human-body"></img>
-                <img ng-src="img/male.png" ng-click="step1.gender = 1" class="center human-body"></img>
+                <img ng-src="img/female.png" ng-click="(step1.gender = 2) && genderSelected(2)" class="center human-body"></img>
+                <img ng-src="img/male.png" ng-click="(step1.gender = 1) && genderSelected(1)" class="center human-body"></img>
               </div>
               <div class="center age">
-                <label class="item item-input">
-                  <input type="tel" ng-model="step1.age">
-                  <span class="input-label">גיל</span>
-                </label>
+                <div class="item item-input center">
+                  <input class="input-label" type="tel" ng-model="step1.age" placeholder="הכנס כאן גיל">
+                </div>
               </div>
               <input type="hidden" class="gender-input" ng-model="step1.gender">
             </ion-wizard-content>
@@ -166,13 +169,15 @@
           </ion-wizard-content>
         </ion-slide>
         <ion-slide ion-wizard-step next-condition="step3.symptomId" class="has-header">
-          <ion-radio class= "item-avatar body-parts-list" ng-repeat="dis in relDisease | filter:{ bodyPart: chosenBodyPart }"
-            ng-value="dis.symptomId"
-            ng-model="step3.disease"
-            ng-click="step3.symptomId = {{ dis.symptomId }}"
-            name="{{ dis.symptomId }}">
-            <h2>{{dis.description}}</h2>
-         </ion-radio>
+          <ion-list>
+            <ion-radio class= "item-avatar item-icon-left text-rtl body-parts-list" ng-repeat="dis in relDisease | filter:{ bodyPart: chosenBodyPart }"
+              ng-value="dis.symptomId"
+              ng-model="step3.disease"
+              ng-click="step3.symptomId = {{ dis.symptomId }}"
+              name="{{ dis.symptomId }}">
+              <h2>{{dis.description}}</h2>
+           </ion-radio>
+         </ion-list>
          <input type="hidden" class="symptomId-input" ng-model="step3.symptomId">
             <!-- <div class="row">
                 <div class="col col-center">

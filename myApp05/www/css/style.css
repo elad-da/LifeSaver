@@ -20,9 +20,16 @@ img{
   text-align: center;
 }
 .gender .human-body{
+  height: 65vh;
   padding: 20px;
 }
-.input-label{
+.slider-pager{
+  visibility: hidden;
+}
+input.input-label{
+  font-size: 24px;
+  text-align: center;
+  margin: 0 auto;
   direction: rtl;
 }
 .age{
@@ -34,7 +41,12 @@ img{
 .body-parts-list img{
   right: 16px;
 }
-
+.toast-title{
+  text-align: center;
+}
+.text-rtl .item-content{
+  padding-right: 25px;
+}
 .item-complex.item-icon-left .item-content{
   padding-right: 70px;
 }

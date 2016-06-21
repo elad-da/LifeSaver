@@ -1,4 +1,4 @@
-var map, lat, long, marker, circle, interval;
+var map, lat, long, marker, circle, interval, toast;
 
 angular.module('starter.controllers', [])
 .factory('Data', function(){
@@ -7,79 +7,59 @@ angular.module('starter.controllers', [])
 .controller('AppCtrl', function($scope) {
 })
 
-.controller('MapController', function($scope, $http, $timeout, $cordovaGeolocation) {
-
-  var posOptions = {timeout: 10000, enableHighAccuracy: false};
-  $cordovaGeolocation
-    .getCurrentPosition(posOptions)
-    .then(function (position) {
-      var lat  = position.coords.latitude
-      var long = position.coords.longitude
-      myLatLng = {lat: lat, lng: long}
-      map = new google.maps.Map(document.getElementById('map'), {
-        center: myLatLng,
-        scrollwheel: true,
-        zoom: 15
-      });
-
-
-      $http.post(url, parameter, {
-              headers : {
-                'Content-Type' : 'application/x-www-form-urlencoded; charset=UTF-8'
-            }
-    }).
-        success(function(data, status, headers, config) {
-          // this callback will be called asynchronously
-          // when the response is available
-          var infowindow = new google.maps.InfoWindow({
-            content: "\n כרגע ישנם" + data["count"] + "אנשים\n באזורך הסובלים מאותם תסמינים "
-          });
-
-          infowindow.open(map, marker);
-        }).
-        error(function(error, status) {
-          var infowindow = new google.maps.InfoWindow({
-            content: "ERROR"
-          });
-
-          infowindow.open(map, marker);
-        });
-
-      var marker = new google.maps.Marker({
-        map: map,
-        position: myLatLng,
-      });
-
-      // Circle waves
-      circlize(map, myLatLng);
-    }, function(err) {
-      // error
-    });
-
-  //
-
-})
-
-.controller('IntroCtrl', ['$scope', '$state', '$ionicPopup', '$http', '$cordovaGeolocation', function($scope, $state, $ionicPopup, $http, $cordovaGeolocation) {
+.controller('IntroCtrl', ['$scope', '$state', '$ionicPopup', '$http', '$cordovaGeolocation', "$ionicLoading", "toastr", function($scope, $state, $ionicPopup, $http, $cordovaGeolocation, $ionicLoading, toastr) {
     $scope.step1 = {};
     $scope.step2 = {};
     $scope.step3 = {};
     $scope.step4 = {};
-
+    $scope.isDisabled = false;
+    $scope.showNewReportButton = false;
+    $scope.showPreviousButton = true;
+    getSymptoms($scope, $http);
     map = maptize($cordovaGeolocation, $scope);
+
+    $scope.genderSelected = function(genderId){
+      if(genderId == 1){
+        str = "מין נבחר: גבר"
+      }
+      else {
+        str = "מין נבחר: אשה"
+      }
+      toastr.clear();
+      setTimeout(function(){
+        toastr.info('', str);
+      }, 300);
+    }
     $scope.report = function(gender, age, sympId) {
-      $scope.reportButton = true;
-      if(confirm("דיווח מחלה, האם את/ה בטוח?")){
-        myLatLng = {lat: lat, lng: long}
-        marker = new google.maps.Marker({
-          map: map,
-          position: myLatLng,
-        });
-        // Circle waves
-        postReport(gender, age, sympId, $http);
+      $scope.isDisabled = true;
+      $scope.showNewReportButton = true;
+      $scope.showPreviousButton = false;
+      if(confirm("האם ברצונך לדווח על מחלה?")){
+        $ionicLoading.show();
+        setTimeout(function(){
+          $ionicLoading.hide();
+          myLatLng = {lat: lat, lng: long}
+          marker = new google.maps.Marker({
+            map: map,
+            position: myLatLng,
+          });
+          postReport(gender, age, sympId, $http);
+        }, 2000);
       }
 
     };
+    $scope.newReport = function() {
+      $scope.showNewReportButton = false;
+      $scope.showPreviousButton = true;
+      $scope.isDisabled = false;
+      $scope.step1.age = null;
+      $scope.step1.gender = null;
+      $scope.step2.bodyPart = null;
+      $scope.step3.disease = null;
+      $scope.step3.symptomId = null;
+      angular.element(document.querySelectorAll('.button-previous')).triggerHandler('click').triggerHandler('click').triggerHandler('click');
+      getSymptoms($scope, $http);
+    }
     $scope.cleanOverlays = function(){
       if(typeof circle !== "undefined")
         circle.setMap(null);
@@ -88,6 +68,7 @@ angular.module('starter.controllers', [])
       if(typeof interval !== "undefined")
         clearInterval(interval);
     }
+
     $http.get("http://52.38.110.193:8092/getsymptoms")
     .then(function(response) {
         $scope.relDisease = response.data;
@@ -134,18 +115,14 @@ angular.module('starter.controllers', [])
         image: 'img/body.png'
       }
     ];
-    // $scope.relDisease = [{
-    //   id: 0,
-    //   name: $scope.myWelcome
-    //   }, {
-    //     id: 1,
-    //     name: 'B'
-    //   }, {
-    //     id: 2,
-    //     name: 'C'
-    //   }
-    // ];
 }]);
+
+function getSymptoms($scope, $http){
+  $http.get("http://52.38.110.193:8092/getsymptoms")
+  .then(function(response) {
+      $scope.relDisease = response.data;
+  });
+}
 
 function maptize(cgl, $scope){
   var posOptions = {timeout: 10000, enableHighAccuracy: false};
@@ -170,8 +147,9 @@ function postReport(gender, age, sympId, $http){
       "lat": lat,
       "lng": long,
       "gender": gender,
+      "age": parseInt(age),
       "symptomId": sympId,
-      "comments": "ranTest"
+      "comments": ""
     }
   );
 
@@ -184,7 +162,7 @@ function postReport(gender, age, sympId, $http){
       // this callback will be called asynchronously
       // when the response is available
       var infowindow = new google.maps.InfoWindow({
-        content: "\n כרגע ישנם" + data["count"] + "אנשים\n באזורך הסובלים מאותם תסמינים "
+        content: "ישנם " + data["count"] + " אנשים באזורך הסובלים מאותם תסמינים "
       });
 
       infowindow.open(map, marker);

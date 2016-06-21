@@ -7,7 +7,7 @@
 // 'starter.controllers' is found in controllers.js
 
 
-angular.module('starter', ['ionic', 'starter.controllers', 'ionic.wizard', 'ngCordova'])
+angular.module('starter', ['ionic', 'starter.controllers', 'ionic.wizard', 'ngCordova', 'toastr'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -16,7 +16,12 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ionic.wizard', 'ngCo
     }
   });
 })
-
+.config(function(toastrConfig) {
+  angular.extend(toastrConfig, {
+    positionClass: 'toast-bottom-center',
+    timeOut: 700
+  });
+})
 .config(function($stateProvider, $urlRouterProvider) {
   $stateProvider
 
