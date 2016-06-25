@@ -27,6 +27,7 @@ type BOSymptoms struct {
 	BodyPart          DbHelper.DbInt    `db:"BodyPart" json:"bodyPart"`
 	Expiry            DbHelper.DbInt    `db:"Expiry" json:"expiry"`
 	EpidemicThreshold DbHelper.DbInt    `db:"EpidemicThreshold" json:"epidemicThreshold"`
+	Precision         DbHelper.DbInt    `db:"Precision" json:"precision"`
 }
 type User struct {
 	RowNum       *DbHelper.DbInt   `json:"-" dbUpdate:"false"`
@@ -47,7 +48,7 @@ func selectStatementByDriver(results interface{}, conKey, whClause, ordClause, t
 	caseSql := ` FROM    ( SELECT ` + DbHelper.GetFieldListFromStructSkipErr(results) + ` FROM ` + tableName + whClause + `) AS Results`
 	resultSql = "SELECT  * " + caseSql + " LIMIT ?, ?"
 
-	countSql = `SELECT  Count(1) FROM ` + tableName
+	countSql = `SELECT  Count(1) FROM ` + tableName + ` WHERE CancelationDate is null`
 
 	return
 }
@@ -78,7 +79,8 @@ func getGenericBoList(results interface{}, pageNo int, resultsPerPage int, Crite
 		Count = cntInt
 	}
 
-	parms = append(parms, (pageNo-1)*resultsPerPage, (pageNo-1)*resultsPerPage+resultsPerPage)
+	//parms = append(parms, (pageNo-1)*resultsPerPage, (pageNo-1)*resultsPerPage+resultsPerPage)
+	parms = append(parms, (pageNo-1)*resultsPerPage, resultsPerPage)
 	if err = DbHelper.SelectToStruct(results, AppConf.SqlConnections.SqlConId, resultSql, parms...); err != nil {
 		return
 	}
@@ -97,7 +99,7 @@ func crudSymptomsHandler(response http.ResponseWriter, request *http.Request) {
 		symptoms = append(symptoms, BOSymptoms{})
 	}
 	CrudHandler(AppConf.SqlConnections.SqlConId, response, request, "symptoms", &symptoms,
-		getGenericBoList, checkToken, []string{"SymptomId"}, false)
+		getGenericBoList, checkToken, []string{"symptomId"}, false)
 	return
 }
 
@@ -109,6 +111,56 @@ func boUsersHandler(response http.ResponseWriter, request *http.Request) {
 	CrudHandler(AppConf.SqlConnections.SqlConId, response, request, "users", &users,
 		getGenericBoList, checkToken, []string{"userName"}, false)
 	return
+}
+
+func boReportsHandler(response http.ResponseWriter, request *http.Request) {
+	var reports []Report
+	if request.Method != "GET" && request.Method != "VIEW" {
+		reports = append(reports, Report{})
+	}
+	CrudHandler(AppConf.SqlConnections.SqlConId, response, request, "reports", &reports,
+		getGenericBoList, checkToken, []string{"recNo"}, false)
+	return
+}
+
+func symptomMarkersHandler(response http.ResponseWriter, request *http.Request) {
+	urlVars := strings.Split(request.URL.Path, "/")
+	WriteHeaders(response)
+	if request.Method == "GET" {
+
+		if len(urlVars) > 2 {
+			if symId := urlVars[2]; len(symId) == 0 {
+				fmt.Print("symptomMarkersHandler Missing Id: ", urlVars)
+				http.Error(response, "No Such Route", http.StatusBadRequest)
+				return
+			} else {
+				type Marker struct {
+					Lat DbHelper.DbFloat `json:"lat"`
+					Lng DbHelper.DbFloat `json:"lng"`
+				}
+				var markers []Marker
+				qry := `SELECT Lat,Lng from Reports where SymptomId = ? and CancelationDate is null Order By 1 desc`
+
+				if err := DbHelper.SelectToStruct(&markers, AppConf.SqlConnections.SqlConId, qry, symId); err != nil {
+					writeErrorResponse(response, "symptomMarkersHandler ", "error get Lat Lng from db", err)
+					return
+				} else {
+					if bt, err := json.Marshal(markers); err != nil {
+						writeErrorResponse(response, "symptomMarkersHandler ", "error marshaling markers", err)
+					} else {
+						response.Write(bt)
+					}
+				}
+			}
+
+		} else {
+			fmt.Print("symptomMarkersHandler Wrong Route: ", urlVars)
+			http.Error(response, "No Such Route", http.StatusBadRequest)
+			return
+		}
+
+	}
+
 }
 
 func loginHandler(response http.ResponseWriter, request *http.Request) {
@@ -136,7 +188,7 @@ func loginHandler(response http.ResponseWriter, request *http.Request) {
 				//PrintAsJson(user)
 				if tokenIntf, err := getTokenByUnAndPw(user.Username, user.Password, true); err != nil {
 					fmt.Println(tokenIntf, err.Error())
-					WriteErrorRespose(response, "Wrong credentials")
+					WriteErrorRespose(response, "שם משתמש או סיסמה שגויים")
 				} else {
 					type Token struct {
 						Value string `json:"token"`
@@ -210,6 +262,25 @@ func getTokenByUnAndPw(userName, password string, createToken bool) (string, err
 			}
 		} else {
 			return "", fmt.Errorf("No User Found")
+		}
+
+		if lastAct, err := DbHelper.GetDbValueStr(AppConf.SqlConnections.SqlConId,
+			`Select LastActivity from Users where [UserName] = ? and CancelationDate is null limit 1`, users[0].UserName.GetValue()); err != nil {
+			return "", fmt.Errorf("getTokenByUnAndPw, Error in select lastActivity, ", err)
+		} else {
+			last, err := time.Parse(TimeLayoutYYYYMMDD_HHMMSS, lastAct)
+			if err != nil {
+				fmt.Println("error parse LastActivity time, ", err.Error())
+				return "", fmt.Errorf("getTokenByUnAndPw, error parse LastActivity time, ", err.Error())
+			}
+			timeNow, err := time.Parse(TimeLayoutYYYYMMDD_HHMMSS, time.Now().String()[:22])
+			if err != nil {
+				fmt.Println("error parse now time, ", err.Error())
+				return "", fmt.Errorf("getTokenByUnAndPw, error parse now time, ", err.Error())
+			}
+			if timeNow.Sub(last) >= time.Duration(30)*time.Minute {
+				return "", fmt.Errorf("Session ended")
+			}
 		}
 
 	} else {
