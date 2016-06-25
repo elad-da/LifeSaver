@@ -17,8 +17,6 @@ import (
 	"gopkg.in/gomail.v2"
 
 	"../Backend/DbHelper"
-	//_ "github.com/alexbrainman/odbc"
-	//_ "github.com/mattn/go-sqlite3"
 )
 
 const TimeLayoutYYYYMMDD_HHMMSS = "2006-01-02 15:04:05"
@@ -34,17 +32,24 @@ type googleGeocodeResponse struct {
 }
 
 type Report struct {
+	RowNum    *DbHelper.DbInt    `json:"-" dbUpdate:"false"`
+	RecNo     *DbHelper.DbInt    `json:"recNo"`
 	Lat       *DbHelper.DbFloat  `json:"lat"`
 	Lng       *DbHelper.DbFloat  `json:"lng"`
 	Gender    *DbHelper.DbInt    `json:"gender"`
+	Age       *DbHelper.DbInt    `json:"age"`
 	SymptomId *DbHelper.DbInt    `json:"symptomId"`
 	Comments  *DbHelper.DbString `json:"comments"`
+	//InsertionTime *DbHelper.DbString `json:"insertionTime" db:"-"`
 }
 
 type Option struct {
-	Range     DbHelper.DbFloat  `json:"range"`
-	Precision DbHelper.DbInt    `json:"precision"`
-	Emails    DbHelper.DbString `json:"emails"`
+	Range     DbHelper.DbFloat `json:"range"`
+	Precision DbHelper.DbInt   `json:"precision"`
+}
+
+func (o *Option) getRange() float64 {
+	return o.Range.GetValue()
 }
 
 type LatLng struct {
@@ -66,7 +71,7 @@ type Configuration struct {
 }
 
 var AppConf Configuration
-var Options []Option
+var options []Option
 
 //ReadConf reads the configuration file (Algo.conf) and loads it to the AppConf structure
 func ReadConf() error {
@@ -117,10 +122,15 @@ func main() {
 	http.HandleFunc("/users", boUsersHandler)
 	http.HandleFunc("/users/", boUsersHandler)
 
+	http.HandleFunc("/userReports", boReportsHandler)
+	http.HandleFunc("/userReports/", boReportsHandler)
+
 	http.HandleFunc("/login", loginHandler)
 
 	http.HandleFunc("/backoffice/", FrontEndHandler)
 	http.HandleFunc("/combos/", combosHandler)
+
+	http.HandleFunc("/symptomMarkers/", symptomMarkersHandler)
 
 	fmt.Println("Listening on port ", AppConf.ListenOnPort)
 	httpErr := http.ListenAndServe(":"+AppConf.ListenOnPort, nil)
@@ -132,8 +142,8 @@ func main() {
 
 func loadOptions() error {
 
-	qry := `SELECT Range, Precision, Emails from Options`
-	if err := DbHelper.SelectToStruct(&Options, AppConf.SqlConnections.SqlConId, qry); err != nil {
+	qry := `SELECT Range, Precision from Options`
+	if err := DbHelper.SelectToStruct(&options, AppConf.SqlConnections.SqlConId, qry); err != nil {
 		fmt.Println("Error Loading Otions, ", err)
 		return err
 	}
@@ -145,6 +155,13 @@ func loadOptions() error {
 func sendEmail(cityName string, threshold, symId int64) error {
 
 	//emails := strings.Split(strings.Join(strings.Fields(Options[0].Emails), ""), ",") //remove white spaces and split
+
+	symName, err := DbHelper.GetDbValueStr(AppConf.SqlConnections.SqlConId,
+		`Select Description from Symptoms where [SymptomId] = ? and CancelationDate is null limit 1`, symId)
+
+	if err != nil {
+		return fmt.Errorf("sendEmail, Error in select Symptom Name, ", err)
+	}
 
 	type data struct {
 		Email DbHelper.DbString
@@ -158,13 +175,13 @@ func sendEmail(cityName string, threshold, symId int64) error {
 
 	for _, email := range emails {
 		m := gomail.NewMessage()
-		m.SetAddressHeader("From", "eladzada1988@gmail.com", "LifeSaver")
+		m.SetAddressHeader("From", "saverlifesystems@gmail.com", "LifeSaver")
 		m.SetAddressHeader("To", email.Email.GetValue(), "")
 		m.SetHeader("Subject", "Possible Epidemic!")
 		//TODO : complete identification
-		m.SetBody("text/plain", "There is a possibility for epidemic near "+cityName+" ,Over "+fmt.Sprint(threshold)+" patients have been identified in Symptom number: "+fmt.Sprint(symId))
+		m.SetBody("text/plain", "There is a possibility for epidemic near "+cityName+" ,Over "+fmt.Sprint(threshold)+" patients have been identified in: \n"+symName)
 
-		d := gomail.NewPlainDialer("smtp.gmail.com", 587, "eladzada1988", "elad7717")
+		d := gomail.NewPlainDialer("smtp.gmail.com", 587, "saverlifesystems", "lifesaver2016")
 
 		if err := d.DialAndSend(m); err != nil {
 			return fmt.Errorf(err.Error())
@@ -176,7 +193,7 @@ func sendEmail(cityName string, threshold, symId int64) error {
 
 func checkOldReports() {
 
-	qryFixNull := `UPDATE Reports SET CancelationDate = ? WHERE SymptomId is null`
+	qryFixNull := `UPDATE Reports SET CancelationDate = ? WHERE (SymptomId is null or RecNo is null or InsertionTime is null)`
 	if _, err := DbHelper.Execute(AppConf.SqlConnections.SqlConId, qryFixNull, time.Now().Format(TimeLayoutYYYYMMDD_HHMMSS)); err != nil {
 		fmt.Println("Error Fixing null columns", err)
 		//return
@@ -186,9 +203,9 @@ func checkOldReports() {
 			Order By RecNo`
 
 	type record struct {
-		RecNo         int64
-		SymptomId     int64
-		InsertionTime string
+		RecNo         *DbHelper.DbInt
+		SymptomId     *DbHelper.DbInt
+		InsertionTime *DbHelper.DbString
 	}
 	var records []record
 	if err := DbHelper.SelectToStruct(&records, AppConf.SqlConnections.SqlConId, qry); err != nil {
@@ -203,13 +220,13 @@ func checkOldReports() {
 		fmt.Println("Active records: ", len(records))
 		for _, val := range records {
 
-			exp, err := getExpiryTime(val.SymptomId) // TODO : build a wrapper for id and expiry
+			exp, err := getExpiryTime(val.SymptomId.GetValue()) // TODO : build a wrapper for id and expiry
 			//fmt.Println("Here")
 			if err != nil {
 				fmt.Println("getExpiryTime, ", err.Error())
 				return
 			}
-			createdAt, err := time.Parse(TimeLayoutYYYYMMDD_HHMMSS, val.InsertionTime[:22])
+			createdAt, err := time.Parse(TimeLayoutYYYYMMDD_HHMMSS, val.InsertionTime.GetValue()[:22])
 			if err != nil {
 				fmt.Println("error parse insertion time, ", err.Error())
 				return
@@ -220,11 +237,11 @@ func checkOldReports() {
 				return
 			}
 			if timeNow.Sub(createdAt) >= time.Duration(exp)*time.Minute {
-				if err := deleteOldReport(val.RecNo); err != nil {
+				if err := deleteOldReport(val.RecNo.GetValue()); err != nil {
 					fmt.Println(err.Error())
 					//return
 				} else {
-					fmt.Println("success delete report, id: ", val.RecNo, " at time: ", time.Now().Format(TimeLayoutYYYYMMDD_HHMMSS))
+					fmt.Println("success delete report, id: ", val.RecNo.GetValue(), " at time: ", time.Now().Format(TimeLayoutYYYYMMDD_HHMMSS))
 				}
 			}
 		}
@@ -291,6 +308,7 @@ func reportsHandler(response http.ResponseWriter, request *http.Request) {
 					writeErrorResponse(response, "reportsHandler ", "error insert user to db", err)
 					return
 				} else {
+					//TODO get presicion from symptoms by symptom id
 					if err := responseReleventRepCnt(response, report.SymptomId.GetValue(), report.Lat.GetValue(), report.Lng.GetValue()); err != nil {
 						writeErrorResponse(response, "reportsHandler ", "error response Relevent Reports Count", err)
 					}
@@ -433,21 +451,40 @@ func symptomsHandler(response http.ResponseWriter, request *http.Request) {
 	}
 }
 
+func getRangeFromOptions(pre int64) float64 {
+
+	for _, op := range options {
+		if op.Precision.GetValue() == pre {
+			return op.getRange()
+		}
+	}
+	return 0
+
+}
+
 func getNearReportsCount(latLng []LatLng, curLat, curLng float64, symId int64) (int64, error) {
 
 	if len(latLng) == 0 {
 		return 0, fmt.Errorf("No lat lng to check")
 	}
 	fmt.Println(len(latLng))
-	count := -1 //Dont count yourself
-	latUp := toFixed(curLat, Options[0].Precision.GetValue()) + Options[0].Range.GetValue()
-	latDown := toFixed(curLat, Options[0].Precision.GetValue()) - Options[0].Range.GetValue()
 
-	lngUp := toFixed(curLng, Options[0].Precision.GetValue()) + Options[0].Range.GetValue()
-	lngDown := toFixed(curLng, Options[0].Precision.GetValue()) - Options[0].Range.GetValue()
+	qry := `SELECT Precision from Symptoms WHERE SymptomId = ? and CancelationDate is null limit 1`
+	pre, err := DbHelper.GetDbValueInt(AppConf.SqlConnections.SqlConId, qry, symId)
+	if err != nil {
+		return 0, fmt.Errorf("Error getting Precision, ", err)
+	}
+	Range := getRangeFromOptions(pre)
+
+	count := -1 //Dont count yourself
+	latUp := toFixed(curLat, pre) + Range
+	latDown := toFixed(curLat, pre) - Range
+
+	lngUp := toFixed(curLng, pre) + Range
+	lngDown := toFixed(curLng, pre) - Range
 	for _, val := range latLng {
-		lat := toFixed(val.Lat.GetValue(), Options[0].Precision.GetValue())
-		lng := toFixed(val.Lng.GetValue(), Options[0].Precision.GetValue())
+		lat := toFixed(val.Lat.GetValue(), pre)
+		lng := toFixed(val.Lng.GetValue(), pre)
 		//fmt.Println(latUp, lat, latDown)
 		//fmt.Println(lngUp, lng, lngDown)
 		if inRange(lat, latUp, latDown) && inRange(lng, lngUp, lngDown) {
@@ -466,12 +503,6 @@ func inRange(target, up, down float64) bool {
 	}
 	return false
 }
-
-//func sendDetails(id *int64, lat, lng float64) {
-//	idChan <- id
-//	latChan <- lat
-//	lngChan <- lng
-//}
 
 func checkEpidemicOutbreak(lat, lng float64, count, symId int64) {
 
@@ -541,9 +572,9 @@ func reverseGeocode(lat, lng float64) string {
 
 func insertReport(conKey string, r Report) error {
 
-	qry := `INSERT INTO Reports(Lat, Lng, Gender, SymptomId, Comments, InsertionTime) values (?,?,?,?,?,?)`
+	qry := `INSERT INTO Reports(Lat, Lng, Gender, Age, SymptomId, Comments, InsertionTime) values (?,?,?,?,?,?,STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW', 'localtime'))`
 	if _, err := DbHelper.Execute(AppConf.SqlConnections.SqlConId, qry, r.Lat.GetValue(), r.Lng.GetValue(), r.Gender.GetValue(),
-		r.SymptomId.GetValue(), r.Comments.GetValue(), time.Now()); err != nil {
+		r.Age.GetValue(), r.SymptomId.GetValue(), r.Comments.GetValue() /*, time.Now()*/); err != nil {
 		fmt.Println(err)
 		return err
 	}
