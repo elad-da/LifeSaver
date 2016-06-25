@@ -1,45 +1,37 @@
-App.StoresEditController 		= Em.ArrayController.extend();
-App.StoresCreateController 	= Em.ArrayController.extend();
-App.StoresDeleteController 	= Em.Controller.extend();
+App.UserReportsEditController 		= Em.ArrayController.extend();
+App.UserReportsCreateController 	= Em.ArrayController.extend();
+App.UserReportsDeleteController 	= Em.Controller.extend();
 
-App.StoresCreateRoute = App.StoresEditRoute = App.ProtectedRoute.extend({
+App.UserReportsCreateRoute = App.UserReportsEditRoute = App.ProtectedRoute.extend({
 	
 
 	model: function(params)
 	{
-		if(params.store_id)
-			return $.getJSON(App.get('apiurl') + 'stores/'+params.store_id);
+		if(params.userReport_id)
+			return $.getJSON(App.get('apiurl') + 'userReports/'+params.userReport_id);
 		
-		return $.getJSON(App.get('apiurl') + 'stores/0');
+		return {isnew: true};
 	},
 
 	setupController: function(ctrl, model)
 	{
-
-		if(model.storeNo == 0)
-		{
-			delete model.storeNo;
-			model.isnew = true;
-		}	
-		
-		ctrl.set('store', Em.Object.create(model));
-		
+		ctrl.set('userReport', App.UserReportsController.create(model));
 	},
 
 
 	renderTemplate: function()
 	{		
-		var data = this.render('stores/modal', {
+		var data = this.render('userReports/modal', {
 		  into: 'application',
 		  outlet: 'modal',
 		});
 
-		this.render('stores/index', {controller: this.controllerFor('stores.index')});
+		this.render('userReports/index', {controller: this.controllerFor('userReports.index')});
 	}
 
 });
 
-App.StoresDeleteRoute = App.ProtectedRoute.extend({
+App.UserReportsDeleteRoute = App.ProtectedRoute.extend({
 	
 
 	model: function(params)
@@ -49,18 +41,17 @@ App.StoresDeleteRoute = App.ProtectedRoute.extend({
 
 	setupController: function(ctrl, model)
 	{
-		ctrl.set('id', model.store_id);
+		ctrl.set('id', model.userReport_id);
 	},
-
 
 	renderTemplate: function()
 	{		
-		var data = this.render('stores/confirm', {
+		var data = this.render('userReports/confirm', {
 		  into: 'application',
 		  outlet: 'modal',
 		});
 
-		this.render('stores/index', {controller: this.controllerFor('stores.index')});
+		this.render('userReports/index', {controller: this.controllerFor('userReports.index')});
 	}
 
 });

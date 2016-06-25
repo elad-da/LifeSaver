@@ -1,43 +1,42 @@
-App.StoresIndexSearchController = Ember.Object.extend({
-			'storeNo': '',
-			'storeName': '',
-			'region': '',
+App.UserReportsIndexSearchController = Ember.Object.extend({
+			'gender': '',
+			'age': '',
+			'symptomId': '',
 
 
 			params: function(){
-				var params  = 'storeNo storeName region'.split(' ');
+				var params  = 'gender age symptomId'.split(' ');
         var fdata   = [];
         var pval = null;
         for(var i = 0; i < params.length; i++)
         {
         	pval = this.get(params[i]);
         	if(pval !== null)
-        		fdata.push('['+params[i]+']='+pval);//(pval == null ? '' : pval));
+        		fdata.push('['+params[i]+']='+pval);
         }
         return fdata.join('&');
-			}.property('storeNo', 'storeName', 'region')
+			}.property('gender', 'age', 'symptomId')
 });
 
-App.StoresIndexRoute = App.ProtectedRoute.extend({
+App.UserReportsIndexRoute = App.ProtectedRoute.extend({
 
 	setupController: function(ctrl, model)
 	{
-		ctrl.set('search', this.controllerFor('storesIndexSearch'));
+		ctrl.set('search', this.controllerFor('UserReportsIndexSearch'));
 		ctrl.refresh();
 	}
 
 });
 
-App.StoresRoute = App.ProtectedRoute.extend({
+App.UserReportsRoute = App.ProtectedRoute.extend({
 	actions: {
-
 		'delete': function(id, view){
 			var self = this;
 			$.ajax({
 				type: 'DELETE',
-				url: App.get('apiurl') + 'stores/'+id,
+				url: App.get('apiurl') + 'userReports/'+id,
 			}).then(function(){
-				self.transitionTo('stores');
+				self.transitionTo('userReports');
 			}).fail(function(data){
 				//var error = data.responseJSON.error
 				//form.find('.errors').html('<div class="alert alert-danger"> <strong>שגיאה:</strong> '+data.responseText+'</div>')
@@ -46,17 +45,15 @@ App.StoresRoute = App.ProtectedRoute.extend({
 
 		save: function(model, view){
 
-			//console.log('save store');
-
+			console.log(model);
 			//to ints
 			var names = 
-			"storeNo storeServerPort debugMode numberOfMakeLinesEmployees "+
-			"prepareSeconds ovenSeconds cutSeconds cutSecondPizza "+
-			"makeOrdersLevel0 makeOrdersLevel1 makeOrdersLevel2 makeOrdersLevel3 "+
-			"timeToWaitForSecondDelivery secondsAllowedBetweenCoupledOrders "+
-			"secondsAllowedBetweenPreparedAndOvenOrder secondsFromStopToDoorWay "+
-			"tripletsDistanceInSeconds secondsAllowedNotToBeDispatched "+
-			"secondsForKm maxMinutesToNotifyCustomer timeOffset maxOrdersToHoldOnShelf";
+			"age gender";
+			
+			var latlng = 
+			"lat lng";
+			
+			var toFloat = latlng.split(' ')
 
 			var toInts = names.split(' ');
 
@@ -67,11 +64,7 @@ App.StoresRoute = App.ProtectedRoute.extend({
 			var form = view.$('form');
 			var valid = form.parsley('validate');
 			if(!valid)
-			{
-				var tabName = form.find('.parsley-error').first().closest('.tab-pane').attr('id');
-				Em.$('[href=#'+tabName+']').click();
 				return;
-			}
 
 
 			var method;
@@ -87,26 +80,25 @@ App.StoresRoute = App.ProtectedRoute.extend({
 			var data = JSON.stringify(model);
 			data = JSON.parse(data);
 
+
 			for(var key in data)
 			{
 				if(toInts.indexOf(key) !== -1)
 					data[key] = parseInt(data[key]);
-
+				
+				if(toFloat.indexOf(key) !== -1)
+					data[key] = parseFloat(data[key]);
 
 			}
 
-			//conver to floats
-			data.branchLocation.lat = parseFloat(data.branchLocation.lat);
-			data.branchLocation.lng = parseFloat(data.branchLocation.lng);
-
 			$.ajax({
 				type: method,
-				url: App.get('apiurl') + 'stores',
+				url: App.get('apiurl') + 'userReports',
 				data: JSON.stringify(data)
 			}).then(function(){
-				self.transitionTo('stores');
+				self.transitionTo('userReports');
 			}).fail(function(data){
-				//var error = data.responseJSON.error
+				
 				form.find('.errors').html('<div class="alert alert-danger"> <strong>שגיאה:</strong> '+data.responseText+'</div>')
 			});
 		}

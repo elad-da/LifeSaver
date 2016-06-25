@@ -4,19 +4,20 @@ App.IndexRoute = Ember.Route.extend({
 		var self = this;
 
 		var p = Ember.RSVP.hash({
-      //data1: $.getJSON(App.get('apiurl') + 'combos/vehicles'),
-      //data2: $.getJSON(App.get('apiurl') + 'combos/stores'),
+      data1: $.getJSON(App.get('apiurl') + 'combos/userReports'),
+      //data2: $.getJSON(App.get('apiurl') + 'combos/symptoms'),
 	  data3: $.getJSON(App.get('apiurl') + 'combos/symptoms')
     });
     
     p.then(function(data){
 		App.symptomsBodyParts.set('content', data.data3.bodyparts);
-  		//App.vehiclesStatuses.set('content', data.data1.statuses);
-			//App.vehiclesStores.set('content', data.data1.stores);
+		App.symptomsPrecisions.set('content', data.data3.precisions);
+  		App.userReportsGenders.set('content', data.data1.genders);
+		App.userReportsSymptomIds.set('content', data.data1.symptomIds);
 			//App.storesRegions.set('content', data.data2.regions);
 			
 
-			self.transitionTo('symptoms');
+			self.transitionTo('userReports');
     });
     
 	}

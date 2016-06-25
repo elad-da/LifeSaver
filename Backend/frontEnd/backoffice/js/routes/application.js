@@ -68,6 +68,7 @@ App.LoginRoute  = Em.Route.extend({
 				data: JSON.stringify(model)
 			}).then(function(data){
 				//console.log(data);
+				
 				var ctrl = self.controllerFor('login');
 				var appCtrl = self.controllerFor('application');
 				ctrl.set('token', data.token);
@@ -83,7 +84,7 @@ App.LoginRoute  = Em.Route.extend({
 				self.transitionTo('index');
 			}).fail(function(data){
 				//console.log(data);
-				var error = data.responseJSON.error
+				var error = data.responseText
 				form.find('.errors').html('<div class="alert alert-danger"> <strong>שגיאה:</strong> '+error+'</div>')
 			});
 		}

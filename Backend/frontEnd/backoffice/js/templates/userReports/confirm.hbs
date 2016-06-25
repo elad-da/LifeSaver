@@ -4,7 +4,7 @@
   <div class="modal-dialog" style="width: 400px;">
     <div class="modal-content">
       <div class="modal-header">
-        {{#linkTo 'stores' tag="button" type="button" class="close"}}&times;{{/linkTo}}
+        {{#linkTo 'userReports' tag="button" type="button" class="close"}}&times;{{/linkTo}}
         <h4 class="modal-title">
           אשר מחיקה
         </h4>
@@ -13,13 +13,13 @@
         <div class="row">
           <div class="col-md-12">
             <div class="alert alert-danger">
-              <p>האם אתה בטוח שברצונך למחוק סניף זה?</p>
+              <p>האם אתה בטוח שברצונך למחוק דיווח זה?</p>
             </div>
           </div>
         </div>
       </div>
       <div class="modal-footer">
-       {{#linkTo 'stores' tag="button" type="button" class="btn btn-default"}}ביטול{{/linkTo}}
+       {{#linkTo 'userReports' tag="button" type="button" class="btn btn-default"}}ביטול{{/linkTo}}
         <div class="pull-left">
           <button {{action "delete" id view}} type="button" class="btn btn-danger">מחק</button>
         </div>

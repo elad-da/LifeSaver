@@ -30,11 +30,12 @@ App.SymptomsIndexController = GRID.TableController.extend({
 
     columns: [
         //GRID.column('rowNum',           {title: '#',                style: 'min center', isSortable: false, display: 'always'}),
-        GRID.column('symptomId',        {title: 'מספר סימפטום',         style: 'min'                         }),
+        //GRID.column('symptomId',        {title: 'מספר סימפטום',         style: 'min'                         }),
         GRID.column('description',      {title: 'שם סימפטום',          style: 'min'                      }),
         GRID.column('bodyPart',         {title: 'חלק בגוף',            style: 'min'   , formatter:'{{view.content.bodyPartName}}'         }),
         GRID.column('expiry',           {title: 'זמן תפוגה (בדקות)',        style: 'min'                      }),
         GRID.column('epidemicThreshold',           {title: 'סף התפרצות (דיווחים)',         style: 'min'                       }),
+		GRID.column('precision',           {title: 'טווח חיפוש',         style: 'min'         ,formatter:'{{view.content.symptomPrecision}}'              }),
         GRID.column('actions',          {title: 'פעולות',       style: 'min center', isSortable: false, templateName: 'symptoms/grid/actions'})
     ],
 

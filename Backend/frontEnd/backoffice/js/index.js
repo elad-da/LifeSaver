@@ -3,10 +3,13 @@ App = Ember.Application.create({});
 App.set('apiurl', API_URL);
 
 
-App.vehiclesStatuses = Em.ArrayController.create();
-App.vehiclesStores = Em.ArrayController.create();
-App.storesRegions = Em.ArrayController.create();
+//App.vehiclesStatuses = Em.ArrayController.create();
+//App.vehiclesStores = Em.ArrayController.create();
+//App.storesRegions = Em.ArrayController.create();
 App.symptomsBodyParts = Em.ArrayController.create();
+App.symptomsPrecisions = Em.ArrayController.create();
+App.userReportsGenders = Em.ArrayController.create();
+App.userReportsSymptomIds = Em.ArrayController.create();
 
 
 
@@ -23,9 +26,9 @@ App.Router.map(function(){
 	this.route('logout');
 
 	this.resource('vehiclespeedrules', function(){
-		
-	});
 
+	});
+	
 	this.resource('stores', function(){
 		this.route('create');
 		this.route('edit', {path: ':store_id/edit'});
@@ -42,6 +45,7 @@ App.Router.map(function(){
 	this.resource('symptoms', function(){
 		this.route('create');
 		this.route('edit', {path: ':symptom_id/edit'});
+		this.route('polygon', {path: ':symptom_id/polygon'});
 		this.route('delete', {path: ':symptom_id/delete'});
 	});
 	
@@ -49,6 +53,12 @@ App.Router.map(function(){
 		this.route('create');
 		this.route('edit', {path: ':user_id/edit'});
 		this.route('delete', {path: ':user_id/delete'});
+	});
+	
+	this.resource('userReports', function(){
+		this.route('create');
+		this.route('edit', {path: ':userReport_id/edit'});
+		this.route('delete', {path: ':userReport_id/delete'});
 	});
 
 });

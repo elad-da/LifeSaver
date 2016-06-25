@@ -8,5 +8,15 @@ App.SymptomsController = Em.Object.extend({
 			return 'לא מוגדר';
 
 		return status.name;
-	}.property('bodyPart')
+	}.property('bodyPart'),
+	
+	symptomPrecision: function()
+	{
+		var status = App.symptomsPrecisions.findBy('id', this.get('precision'));
+	
+		if(!status)
+			return 'לא מוגדר';
+
+		return status.name;
+	}.property('precisio')
 });

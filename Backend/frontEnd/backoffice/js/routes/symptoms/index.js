@@ -1,11 +1,11 @@
 App.SymptomsIndexSearchController = Ember.Object.extend({
-			'symptomId': '',
+			//'symptomId': '',
 			'description': '',
 			'bodyPart': '',
 
 
 			params: function(){
-				var params  = 'symptomId description bodyPart'.split(' ');
+				var params  = 'description bodyPart'.split(' ');
         var fdata   = [];
         var pval = null;
         for(var i = 0; i < params.length; i++)
@@ -15,7 +15,7 @@ App.SymptomsIndexSearchController = Ember.Object.extend({
         		fdata.push('['+params[i]+']='+pval);
         }
         return fdata.join('&');
-			}.property('symptomId', 'description', 'bodyPart')
+			}.property('description', 'bodyPart')
 });
 
 App.SymptomsIndexRoute = App.ProtectedRoute.extend({
@@ -48,7 +48,7 @@ App.SymptomsRoute = App.ProtectedRoute.extend({
 			console.log(model);
 			//to ints
 			var names = 
-			"symptomId bodyPart expiry epidemicThreshold";
+			"symptomId bodyPart expiry epidemicThreshold precision";
 
 			var toInts = names.split(' ');
 
